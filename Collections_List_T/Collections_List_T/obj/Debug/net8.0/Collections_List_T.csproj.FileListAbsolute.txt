@@ -1,0 +1,15 @@
+D:\FPT\GIT\DotNet\Collections_List_T\Collections_List_T\bin\Debug\net8.0\Collections_List_T.exe
+D:\FPT\GIT\DotNet\Collections_List_T\Collections_List_T\bin\Debug\net8.0\Collections_List_T.deps.json
+D:\FPT\GIT\DotNet\Collections_List_T\Collections_List_T\bin\Debug\net8.0\Collections_List_T.runtimeconfig.json
+D:\FPT\GIT\DotNet\Collections_List_T\Collections_List_T\bin\Debug\net8.0\Collections_List_T.dll
+D:\FPT\GIT\DotNet\Collections_List_T\Collections_List_T\bin\Debug\net8.0\Collections_List_T.pdb
+D:\FPT\GIT\DotNet\Collections_List_T\Collections_List_T\obj\Debug\net8.0\Collections_List_T.GeneratedMSBuildEditorConfig.editorconfig
+D:\FPT\GIT\DotNet\Collections_List_T\Collections_List_T\obj\Debug\net8.0\Collections_List_T.AssemblyInfoInputs.cache
+D:\FPT\GIT\DotNet\Collections_List_T\Collections_List_T\obj\Debug\net8.0\Collections_List_T.AssemblyInfo.cs
+D:\FPT\GIT\DotNet\Collections_List_T\Collections_List_T\obj\Debug\net8.0\Collections_List_T.csproj.CoreCompileInputs.cache
+D:\FPT\GIT\DotNet\Collections_List_T\Collections_List_T\obj\Debug\net8.0\Collections_List_T.sourcelink.json
+D:\FPT\GIT\DotNet\Collections_List_T\Collections_List_T\obj\Debug\net8.0\Collections_List_T.dll
+D:\FPT\GIT\DotNet\Collections_List_T\Collections_List_T\obj\Debug\net8.0\refint\Collections_List_T.dll
+D:\FPT\GIT\DotNet\Collections_List_T\Collections_List_T\obj\Debug\net8.0\Collections_List_T.pdb
+D:\FPT\GIT\DotNet\Collections_List_T\Collections_List_T\obj\Debug\net8.0\Collections_List_T.genruntimeconfig.cache
+D:\FPT\GIT\DotNet\Collections_List_T\Collections_List_T\obj\Debug\net8.0\ref\Collections_List_T.dll

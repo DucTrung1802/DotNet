@@ -46,6 +46,7 @@ namespace MyCollection
                 this.Items.CopyTo(new_array, 0);
             }
             this.Items = (object[])new_array;
+            this._Capacity = capacity;
         }
 
         public List()
@@ -70,14 +71,17 @@ namespace MyCollection
         {
             if (this._Count == this._Capacity)
             {
-                if (this.Items is null)
+                if (this._Count == 0)
                 {
-                    this._Capacity = 4;
+                    this.ReallocateList(4);
                 }
-                this.ReallocateList(this.Capacity * 2);
+                else
+                {
+                    this.ReallocateList(this.Capacity * 2);
+                }
             }
+            this.Items[this._Count] = (object)item;
             this._Count++;
-            this.Items[this._Count - 1] = (object)item;
         }
 
         public void AddRange(IEnumerable<T> items)
@@ -190,12 +194,11 @@ namespace MyCollection
     {
         public static void Main()
         {
-            var mylist = new List<int>([1, 2, 3, 4]);
-            mylist.Add(5);
-            mylist.Add(6);
-            foreach (var item in mylist)
+            var mylist = new List<int>(5);
+            for (int i = 0; i < 50; i++)
             {
-                Console.WriteLine(item);
+                mylist.Add(i);
+                Console.WriteLine("Count: " + mylist.Count + "\t Capacity: " + mylist.Capacity);
             }
         }
     }

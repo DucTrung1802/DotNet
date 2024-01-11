@@ -2,10 +2,14 @@
 
 namespace MyCollection
 {
-    class List<T> : IEnumerable<T>
+    class List<T> : Comparer<T>, IEnumerable<T>
     {
+        // Private Fields and Properties
         private int _Capacity = 0;
         private int _Count = 0;
+        private T[]? Items;
+
+        // Public Fields and Properties
         public int Capacity
         {
             set
@@ -31,24 +35,38 @@ namespace MyCollection
                 return this._Count;
             }
         }
-        private object[]? Items;
 
+        public T this[int index]
+        {
+            set
+            {
+                this.Items[index] = value;
+            }
+
+            get
+            {
+                return (T)this.Items[index];
+            }
+        }
+
+        // Private Methods
         private void InitializeList(int capacity = 0)
         {
-            this.Items = new object[capacity];
+            this.Items = new T[capacity];
         }
 
         private void ReallocateList(int capacity)
         {
-            object?[]? new_array = new object[capacity];
+            T[] new_array = new T[capacity];
             if (this.Items is not null)
             {
                 this.Items.CopyTo(new_array, 0);
             }
-            this.Items = (object[])new_array;
+            this.Items = new_array;
             this._Capacity = capacity;
         }
 
+        // Public Methods
         public List()
         {
             this.InitializeList();
@@ -58,7 +76,7 @@ namespace MyCollection
         {
             this.Capacity = collection.Count();
             this._Count = this.Capacity;
-            this.Items = (object[])collection.Select(item => (object?)item).ToArray();
+            this.Items = collection.Select(item => item).ToArray();
         }
 
         public List(int capacity)
@@ -80,13 +98,16 @@ namespace MyCollection
                     this.ReallocateList(this.Capacity * 2);
                 }
             }
-            this.Items[this._Count] = (object)item;
+            this.Items[this._Count] = item;
             this._Count++;
         }
 
         public void AddRange(IEnumerable<T> items)
         {
-
+            foreach (var item in items)
+            {
+                this.Add(item);
+            }
         }
 
         public int BinarySearch(T item)
@@ -94,13 +115,31 @@ namespace MyCollection
             return 0;
         }
 
+        public int BinarySearch(T item, IComparer<T> comparer)
+        {
+            return 0;
+        }
+
+        public int BinarySearch(int index, int count, T item, IComparer<T> comparer)
+        {
+            return 0;
+        }
+
         public void Clear()
         {
-
+            this.Items = null;
+            this._Count = 0;
         }
 
         public bool Contains(T item)
         {
+            for (int i = 0; i < _Count; i++)
+            {
+                if (Items[i].Equals(item))
+                {
+                    return true;
+                }
+            }
             return false;
         }
 
@@ -109,20 +148,36 @@ namespace MyCollection
 
         }
 
-        public bool Exists(Predicate<T> predicate)
+        public bool Exists(Predicate<T> match)
         {
+            for (int i = 0; i < _Count; i++)
+            {
+                if (match(Items[i]))
+                {
+                    return true;
+                }
+            }
             return false;
         }
 
-        public T Find(Predicate<T> predicate)
+        public T? Find(Predicate<T> match)
         {
-            Object result = new Object();
-            return (T)result;
+            for (int i = 0; i < _Count; i++)
+            {
+                if (match(Items[i]))
+                {
+                    return Items[i];
+                }
+            }
+            return default;
         }
 
         public void ForEach(Action<T> action)
         {
+            foreach (var item in this.Items)
+            {
 
+            }
         }
 
         public int IndexOf(T item)
@@ -155,15 +210,19 @@ namespace MyCollection
 
         }
 
+        public void Sort()
+        {
+            Array.Sort(this.Items);
+        }
+
         public void Sort(IComparer<T> comparer)
         {
 
         }
 
-        public object[] ToArray(object obj)
-        {
-            var myobj = new Object[1];
-            return myobj;
+        public T[] ToArray(T input)
+        
+            return ;
         }
 
         public string ToString()
@@ -180,7 +239,9 @@ namespace MyCollection
         {
             for (int i = 0; i < this.Count; i++)
             {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 yield return (T)this.Items[i];
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             }
         }
 
@@ -188,17 +249,26 @@ namespace MyCollection
         {
             return this.GetEnumerator();
         }
+
+        public override int Compare(T? x, T? y)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     class Program
     {
         public static void Main()
         {
-            var mylist = new List<int>(5);
-            for (int i = 0; i < 50; i++)
+            var mylist = new List<int>([1, 2, 5, 3, 4]);
+            foreach (var i in mylist)
             {
-                mylist.Add(i);
-                Console.WriteLine("Count: " + mylist.Count + "\t Capacity: " + mylist.Capacity);
+                Console.WriteLine(i);
+            }
+            mylist.Sort();
+            foreach (var i in mylist)
+            {
+                Console.WriteLine(i);
             }
         }
     }

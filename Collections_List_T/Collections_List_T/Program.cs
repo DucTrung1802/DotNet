@@ -99,9 +99,10 @@ namespace MyCollection
 
         public void AddRange(IEnumerable<T> items)
         {
-            foreach (var item in items)
+            int length = items.Count();
+            for (int i = 0; i < length; i++)
             {
-                this.Add(item);
+                this.Add(items.ElementAt(i));
             }
         }
 
@@ -205,6 +206,7 @@ namespace MyCollection
                     this.Items[i + 1] = this.Items[i];
                 }
                 this.Items[index] = item;
+                this._Count++;
             }
         }
 
@@ -285,11 +287,6 @@ namespace MyCollection
             return default;
         }
 
-        public string ToString()
-        {
-            return this.ToString();
-        }
-
         public IEnumerator<T> GetEnumerator()
         {
             for (int i = 0; i < this.Count; i++)
@@ -310,12 +307,47 @@ namespace MyCollection
             throw new NotImplementedException();
         }
     }
+}
 
-    class Program
+
+
+class GFG : IComparer<string>
+{
+    public int Compare(string x, string y)
     {
-        public static void Main(String[] args)
-        {
 
+        if (x == null || y == null)
+        {
+            return 0;
         }
+
+        // "CompareTo()" method 
+        return x.CompareTo(y);
+
     }
 }
+
+class Program
+{
+    public static void Main()
+    {
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

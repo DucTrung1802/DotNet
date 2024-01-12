@@ -13,12 +13,14 @@ namespace MyCollection
     class Dictionary<TKey, TValue>
     {
         // Private Fields and Properties
-        int[] _Buckets;
-        Entry<TKey, TValue>[] _Entries;
-        int _Free_list;
-        int _Free_count;
-        int _Count;
-        int _Size;
+        private int[] _Buckets;
+        private Entry<TKey, TValue>[] _Entries;
+        private int _Free_list;
+        private int _Free_count;
+        private int _Count;
+        private int _Capacity;
+
+        private IEqualityComparer<TKey>? _Comparer;
 
         // Public Fields and Properties
         //public TValue this[TKey key] { get; set; }
@@ -53,22 +55,33 @@ namespace MyCollection
 
         private void CheckResize(int number_of_new_pairs)
         {
-            if (this._Count + number_of_new_pairs > this._Size)
+            if (this._Count + number_of_new_pairs > this._Capacity)
             {
+                this.SetCapacity(this.ExpandPrime((this._Count + number_of_new_pairs) * 2));
                 this.Resize();
             }
         }
 
+        private void SetCapacity(int capacity)
+        {
+            if (capacity < this._Count)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+
+            this._Capacity = capacity;
+        }
+
         private void Resize()
         {
-            this._Size = this.ExpandPrime(this._Size);
-            int[] new_bucket = new int[this._Size];
-            Entry<TKey, TValue>[] new_entries = new Entry<TKey, TValue>[this._Size];
+            int[] new_bucket = new int[this._Capacity];
+            Entry<TKey, TValue>[] new_entries = new Entry<TKey, TValue>[this._Capacity];
 
             if (this._Count > 0)
             {
                 // commpute new hascode
-                // rearrange to new dictionary
+                // rearrange to new arrays (buckets and entries)
+                // assign to new arrays (buckets and entries)
             }
         }
 
@@ -80,16 +93,17 @@ namespace MyCollection
             this._Free_list = -1;
             this._Free_count = -1;
             this._Count = 0;
-            this._Size = 0;
+            this._Capacity = 0;
         }
 
         public Dictionary(IDictionary<TKey, TValue> keyValuePairs)
         {
+            this.CheckResize(keyValuePairs.Count);
         }
 
         public Dictionary(IDictionary<TKey, TValue> keyValuePairs, IEqualityComparer<TKey> equalityComparer)
         {
-
+            this.CheckResize(keyValuePairs.Count);
         }
 
         public Dictionary(IEqualityComparer<TKey> equalityComparer)
@@ -99,7 +113,7 @@ namespace MyCollection
 
         public Dictionary(int capacity)
         {
-
+            this.SetCapacity(capacity);
         }
 
         public Dictionary(int capacity, IEqualityComparer<TKey> equalityComparer)

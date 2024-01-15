@@ -1,28 +1,31 @@
 ﻿using System.Collections;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 
 namespace MyCollection
 {
-    struct Entry<TKey, TValue>
-    {
-        public KeyValuePair<TKey, TValue> pair;
-        public int _Hashcode;
-        public int _Next;
 
-        public Entry()
-        {
-            this._Hashcode = 0;
-            this._Next = -1;
-
-        }
-    }
 
     class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary
     {
+        struct Entry
+        {
+            public TKey key;
+            public TValue value;
+            public uint _Hashcode;
+            public int _Next;
+
+            public Entry()
+            {
+                this._Hashcode = 0;
+                this._Next = -1;
+            }
+        }
+
         // Private Fields and Properties
         private int[] _Buckets;
-        private Entry<TKey, TValue>[] _Entries;
+        private Entry[] _Entries;
         private TKey[] _Keys;
         private TValue[] _Values;
         private int _Free_list;     // Index of first free slot
@@ -38,17 +41,19 @@ namespace MyCollection
 
         public ICollection<TValue> Values => this._Values;
 
-        public bool IsReadOnly => throw new NotImplementedException();
+        bool IDictionary.IsReadOnly => false;
 
-        public bool IsFixedSize => throw new NotImplementedException();
+        bool ICollection<KeyValuePair<TKey, TValue>>.IsReadOnly => false;
 
-        ICollection IDictionary.Keys => throw new NotImplementedException();
+        bool IDictionary.IsFixedSize => false;
 
-        ICollection IDictionary.Values => throw new NotImplementedException();
+        ICollection IDictionary.Keys => (ICollection)this.Keys;
 
-        public bool IsSynchronized => throw new NotImplementedException();
+        ICollection IDictionary.Values => (ICollection)this.Values;
 
-        public object SyncRoot => throw new NotImplementedException();
+        bool ICollection.IsSynchronized => false;
+
+        object ICollection.SyncRoot => this;
 
         public object? this[object key] { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public TValue this[TKey key] { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
@@ -59,7 +64,7 @@ namespace MyCollection
         private void InitializeDictionary()
         {
             this._Buckets = new int[0];
-            this._Entries = new Entry<TKey, TValue>[0];
+            this._Entries = new Entry[0];
             this._Keys = new TKey[0];
             this._Values = new TValue[0];
             this._Free_list = -1;
@@ -114,7 +119,7 @@ namespace MyCollection
         private void Resize()
         {
             int[] new_bucket = new int[this._Capacity];
-            Entry<TKey, TValue>[] new_entries = new Entry<TKey, TValue>[this._Capacity];
+            Entry[] new_entries = new Entry[this._Capacity];
             TKey[] new_keys = new TKey[this._Capacity];
             TValue[] new_values = new TValue[this._Capacity];
             int new_Free_list = 0;
@@ -123,15 +128,16 @@ namespace MyCollection
             {
                 for (int i = 0; i < this._Count; i++)
                 {
-                    Entry<TKey, TValue> new_entry = new Entry<TKey, TValue>();
-                    new_entry.pair = new KeyValuePair<TKey, TValue>(this._Entries[i].pair.Key, this._Entries[i].pair.Value);
-                    new_entry._Hashcode = Math.Abs(new_entry.GetHashCode());    // Hascode maybe negative but the index in bucket is positive
-                    int modulus = new_entry._Hashcode % this._Capacity;
+                    Entry new_entry = new Entry();
+                    new_entry.key = this._Entries[i].key;
+                    new_entry.value = this._Entries[i].value;
+                    new_entry._Hashcode = (uint)new_entry.key.GetHashCode();    // Hascode maybe negative but the index in bucket is positive
+                    int modulus = (int)(new_entry._Hashcode % this._Capacity);
                     new_entry._Next = new_bucket[modulus] - 1;
                     new_bucket[modulus] = new_Free_list + 1;
                     new_entries[new_Free_list] = new_entry;
-                    new_keys[new_Free_list] = new_entry.pair.Key;
-                    new_values[new_Free_list] = new_entry.pair.Value;
+                    new_keys[new_Free_list] = new_entry.key;
+                    new_values[new_Free_list] = new_entry.value;
                     new_Free_list++;
                 }
 
@@ -212,15 +218,16 @@ namespace MyCollection
         public void Add(TKey key, TValue value)
         {
             this.CheckResize(1);
-            Entry<TKey, TValue> new_entry = new Entry<TKey, TValue>();
-            new_entry.pair = new KeyValuePair<TKey, TValue>(key, value);
-            new_entry._Hashcode = Math.Abs(new_entry.GetHashCode());    // Hascode maybe negative but the index in bucket is positive
-            int modulus = new_entry._Hashcode % this._Capacity;
+            Entry new_entry = new Entry();
+            new_entry.key = key;
+            new_entry.value = value;
+            new_entry._Hashcode = (uint)new_entry.key.GetHashCode();    // Hascode maybe negative but the index in bucket is positive
+            int modulus = (int)(new_entry._Hashcode % this._Capacity);
             new_entry._Next = this._Buckets[modulus] - 1;
             this._Buckets[modulus] = this._Free_list + 1;
             this._Entries[this._Free_list] = new_entry;
-            this._Keys[this._Free_list] = new_entry.pair.Key;
-            this._Values[this._Free_list] = new_entry.pair.Value;
+            this._Keys[this._Free_list] = new_entry.key;
+            this._Values[this._Free_list] = new_entry.value;
             this._Free_list = this.FindFreeListIndex();
             this._Count++;
         }
@@ -230,11 +237,47 @@ namespace MyCollection
             this.Add(item.Key, item.Value);
         }
 
-
-        public bool ContainsKey(TKey key)
+        private ref TValue FindValue(TKey key)
         {
-            throw new NotImplementedException();
+            if (key == null)
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
+
+            ref Entry entry = ref Unsafe.NullRef<Entry>();
+            ref TValue value = ref Unsafe.NullRef<TValue>();
+
+            if (this._Buckets != null)
+            {
+                uint hashcode = (uint)key.GetHashCode();
+                int modulus = (int)(hashcode % this._Capacity);
+                Entry[]? entries = this._Entries;
+                if (this._Buckets[modulus] == 0)
+                {
+                    value = ref Unsafe.NullRef<TValue>();
+                }
+                else
+                {
+                    int next_index = this._Buckets[modulus] - 1;
+                    entry = ref Unsafe.NullRef<Entry>();
+                    while (next_index != -1)
+                    {
+                        entry = ref this._Entries[next_index];
+                        if (entry._Hashcode == hashcode && EqualityComparer<TKey>.Default.Equals(entry.key, key))
+                        {
+                            value = ref entry.value;
+                        }
+                        next_index = entry._Next;
+                    }
+
+                }
+            }
+
+            return ref value;
         }
+
+        public bool ContainsKey(TKey key) =>
+            !Unsafe.IsNullRef(ref FindValue(key));
 
         public bool Remove(TKey key)
         {
@@ -272,7 +315,11 @@ namespace MyCollection
             {
                 if (this._Entries[i]._Hashcode != 0)
                 {
-                    yield return this._Entries[i].pair;
+                    KeyValuePair<TKey, TValue> kvp = new KeyValuePair<TKey, TValue>(
+                        this._Entries[i].key,
+                        this._Entries[i].value);
+
+                    yield return kvp;
                 }
             }
         }
@@ -301,6 +348,7 @@ namespace MyCollection
         {
             throw new NotImplementedException();
         }
+
         IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<TKey>)this).GetEnumerator();
     }
     class Program
@@ -321,10 +369,7 @@ namespace MyCollection
             my_dictionary.Add("Russia", "Moscow");
             my_dictionary.Add("India", "New Delhi");
 
-            foreach (var item in my_dictionary.Values)
-            {
-                Console.WriteLine(item);
-            }
+            Console.WriteLine(my_dictionary.ContainsKey("India"));
         }
     }
 }

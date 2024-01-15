@@ -2,7 +2,7 @@
 
 namespace MyCollection
 {
-    class List<T> : Comparer<T>, IEnumerable<T>
+    class List<T> : IEnumerable<T>
     {
         // Private Fields and Properties
         private int _Capacity = 0;
@@ -301,29 +301,6 @@ namespace MyCollection
         {
             return this.GetEnumerator();
         }
-
-        public override int Compare(T? x, T? y)
-        {
-            throw new NotImplementedException();
-        }
-    }
-}
-
-
-
-class GFG : IComparer<string>
-{
-    public int Compare(string x, string y)
-    {
-
-        if (x == null || y == null)
-        {
-            return 0;
-        }
-
-        // "CompareTo()" method 
-        return x.CompareTo(y);
-
     }
 }
 

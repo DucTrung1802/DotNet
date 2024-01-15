@@ -6,8 +6,7 @@ namespace MyCollection
 {
     struct Entry<TKey, TValue>
     {
-        public TKey _Key;
-        public TValue _Value;
+        public KeyValuePair<TKey, TValue> pair;
         public int _Hashcode;
         public int _Next;
 
@@ -15,8 +14,8 @@ namespace MyCollection
         {
             this._Hashcode = 0;
             this._Next = -1;
-        }
 
+        }
     }
 
     class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary
@@ -24,6 +23,8 @@ namespace MyCollection
         // Private Fields and Properties
         private int[] _Buckets;
         private Entry<TKey, TValue>[] _Entries;
+        private TKey[] _Keys;
+        private TValue[] _Values;
         private int _Free_list;     // Index of first free slot
         private int _Count;         // Current number of pairs
         private int _Capacity;      // Maximum slot in current dictionary
@@ -33,9 +34,9 @@ namespace MyCollection
         // Public Fields and Properties
         public int Count { get { return _Count; } }
 
-        public ICollection<TKey> Keys => throw new NotImplementedException();
+        public ICollection<TKey> Keys => this._Keys;
 
-        public ICollection<TValue> Values => throw new NotImplementedException();
+        public ICollection<TValue> Values => this._Values;
 
         public bool IsReadOnly => throw new NotImplementedException();
 
@@ -54,12 +55,13 @@ namespace MyCollection
 
         //public TValue this[TKey key] { get; set; }
 
-
         // Private Methods
         private void InitializeDictionary()
         {
             this._Buckets = new int[0];
             this._Entries = new Entry<TKey, TValue>[0];
+            this._Keys = new TKey[0];
+            this._Values = new TValue[0];
             this._Free_list = -1;
             this._Count = 0;
             this._Capacity = 0;
@@ -113,39 +115,37 @@ namespace MyCollection
         {
             int[] new_bucket = new int[this._Capacity];
             Entry<TKey, TValue>[] new_entries = new Entry<TKey, TValue>[this._Capacity];
+            TKey[] new_keys = new TKey[this._Capacity];
+            TValue[] new_values = new TValue[this._Capacity];
+            int new_Free_list = 0;
 
             if (this._Count > 0)
             {
                 for (int i = 0; i < this._Count; i++)
                 {
-                    if (this._Entries[i]._Hashcode != 0)
-                    {
-                        Entry<TKey, TValue> new_entry = new Entry<TKey, TValue>();
-                        new_entry._Key = this._Entries[i]._Key;
-                        new_entry._Value = this._Entries[i]._Value;
-                        new_entry._Hashcode = Math.Abs(new_entry.GetHashCode());    // Hascode maybe negative but the index in bucket is positive
-                        int modulus = new_entry._Hashcode % this._Capacity;
-
-                        if (this._Buckets[modulus] != 0)
-                        {
-                            new_entry._Next = this._Buckets[modulus] - 1;
-                        }
-
-                        this._Buckets[modulus] = this._Free_list + 1;
-                        this._Entries[this._Free_list] = new_entry;
-                        this._Free_list++;
-                        this._Count++;
-                    }
+                    Entry<TKey, TValue> new_entry = new Entry<TKey, TValue>();
+                    new_entry.pair = new KeyValuePair<TKey, TValue>(this._Entries[i].pair.Key, this._Entries[i].pair.Value);
+                    new_entry._Hashcode = Math.Abs(new_entry.GetHashCode());    // Hascode maybe negative but the index in bucket is positive
+                    int modulus = new_entry._Hashcode % this._Capacity;
+                    new_entry._Next = new_bucket[modulus] - 1;
+                    new_bucket[modulus] = new_Free_list + 1;
+                    new_entries[new_Free_list] = new_entry;
+                    new_keys[new_Free_list] = new_entry.pair.Key;
+                    new_values[new_Free_list] = new_entry.pair.Value;
+                    new_Free_list++;
                 }
 
-                this._Entries = new_entries;
+                this._Free_list = new_Free_list;
             }
             else
             {
                 this._Free_list = 0;
             }
+
             this._Buckets = new_bucket;
             this._Entries = new_entries;
+            this._Keys = new_keys;
+            this._Values = new_values;
         }
 
         private int FindFreeListIndex()
@@ -213,18 +213,14 @@ namespace MyCollection
         {
             this.CheckResize(1);
             Entry<TKey, TValue> new_entry = new Entry<TKey, TValue>();
-            new_entry._Key = key;
-            new_entry._Value = value;
+            new_entry.pair = new KeyValuePair<TKey, TValue>(key, value);
             new_entry._Hashcode = Math.Abs(new_entry.GetHashCode());    // Hascode maybe negative but the index in bucket is positive
             int modulus = new_entry._Hashcode % this._Capacity;
-
-            if (this._Buckets[modulus] != 0)
-            {
-                new_entry._Next = this._Buckets[modulus] - 1;
-            }
-
+            new_entry._Next = this._Buckets[modulus] - 1;
             this._Buckets[modulus] = this._Free_list + 1;
             this._Entries[this._Free_list] = new_entry;
+            this._Keys[this._Free_list] = new_entry.pair.Key;
+            this._Values[this._Free_list] = new_entry.pair.Value;
             this._Free_list = this.FindFreeListIndex();
             this._Count++;
         }
@@ -272,12 +268,18 @@ namespace MyCollection
 
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
-            throw new NotImplementedException();
+            for (int i = 0; i < this._Capacity; i++)
+            {
+                if (this._Entries[i]._Hashcode != 0)
+                {
+                    yield return this._Entries[i].pair;
+                }
+            }
         }
 
         public void Add(object key, object? value)
         {
-            throw new NotImplementedException();
+            this.Add((TKey)key, (TValue?)value);
         }
 
         public bool Contains(object key)
@@ -305,8 +307,24 @@ namespace MyCollection
     {
         public static void Main()
         {
-            Dictionary<string, int> my_dictionary = new Dictionary<string, int>();
-            my_dictionary.Add("a", 1);
+
+            // Create a new dictionary  
+            // of strings, with string keys. 
+            Dictionary<string, string> my_dictionary =
+               new Dictionary<string, string>();
+
+            // Adding key/value pairs in my_dictionary  
+            my_dictionary.Add("Australia", "Canberra");
+            my_dictionary.Add("Belgium", "Brussels");
+            my_dictionary.Add("Netherlands", "Amsterdam");
+            my_dictionary.Add("China", "Beijing");
+            my_dictionary.Add("Russia", "Moscow");
+            my_dictionary.Add("India", "New Delhi");
+
+            foreach (var item in my_dictionary.Values)
+            {
+                Console.WriteLine(item);
+            }
         }
     }
 }

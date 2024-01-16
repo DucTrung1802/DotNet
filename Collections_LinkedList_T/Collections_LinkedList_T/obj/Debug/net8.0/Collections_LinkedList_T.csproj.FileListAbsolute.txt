@@ -1,0 +1,15 @@
+D:\FPT\GIT\DotNet\Collections_LinkedList_T\Collections_LinkedList_T\bin\Debug\net8.0\Collections_LinkedList_T.exe
+D:\FPT\GIT\DotNet\Collections_LinkedList_T\Collections_LinkedList_T\bin\Debug\net8.0\Collections_LinkedList_T.deps.json
+D:\FPT\GIT\DotNet\Collections_LinkedList_T\Collections_LinkedList_T\bin\Debug\net8.0\Collections_LinkedList_T.runtimeconfig.json
+D:\FPT\GIT\DotNet\Collections_LinkedList_T\Collections_LinkedList_T\bin\Debug\net8.0\Collections_LinkedList_T.dll
+D:\FPT\GIT\DotNet\Collections_LinkedList_T\Collections_LinkedList_T\bin\Debug\net8.0\Collections_LinkedList_T.pdb
+D:\FPT\GIT\DotNet\Collections_LinkedList_T\Collections_LinkedList_T\obj\Debug\net8.0\Collections_LinkedList_T.GeneratedMSBuildEditorConfig.editorconfig
+D:\FPT\GIT\DotNet\Collections_LinkedList_T\Collections_LinkedList_T\obj\Debug\net8.0\Collections_LinkedList_T.AssemblyInfoInputs.cache
+D:\FPT\GIT\DotNet\Collections_LinkedList_T\Collections_LinkedList_T\obj\Debug\net8.0\Collections_LinkedList_T.AssemblyInfo.cs
+D:\FPT\GIT\DotNet\Collections_LinkedList_T\Collections_LinkedList_T\obj\Debug\net8.0\Collections_LinkedList_T.csproj.CoreCompileInputs.cache
+D:\FPT\GIT\DotNet\Collections_LinkedList_T\Collections_LinkedList_T\obj\Debug\net8.0\Collections_LinkedList_T.sourcelink.json
+D:\FPT\GIT\DotNet\Collections_LinkedList_T\Collections_LinkedList_T\obj\Debug\net8.0\Collections_LinkedList_T.dll
+D:\FPT\GIT\DotNet\Collections_LinkedList_T\Collections_LinkedList_T\obj\Debug\net8.0\refint\Collections_LinkedList_T.dll
+D:\FPT\GIT\DotNet\Collections_LinkedList_T\Collections_LinkedList_T\obj\Debug\net8.0\Collections_LinkedList_T.pdb
+D:\FPT\GIT\DotNet\Collections_LinkedList_T\Collections_LinkedList_T\obj\Debug\net8.0\Collections_LinkedList_T.genruntimeconfig.cache
+D:\FPT\GIT\DotNet\Collections_LinkedList_T\Collections_LinkedList_T\obj\Debug\net8.0\ref\Collections_LinkedList_T.dll

@@ -154,7 +154,7 @@ namespace MyCollection
                     Entry new_entry = new Entry();
                     new_entry.key = this._Entries[i].key;
                     new_entry.value = this._Entries[i].value;
-                    new_entry._Hashcode = (uint)new_entry.key.GetHashCode();    // Hascode maybe negative but the index in bucket is positive
+                    new_entry._Hashcode = (uint)new_entry.key!.GetHashCode();    // Hascode maybe negative but the index in bucket is positive
                     int modulus = (int)(new_entry._Hashcode % this._Capacity);
                     new_entry._Next = new_bucket[modulus] - 1;
                     new_bucket[modulus] = new_Free_list + 1;
@@ -309,7 +309,52 @@ namespace MyCollection
 
         public bool Remove(TKey key)
         {
-            throw new NotImplementedException();
+            if (key == null)
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
+
+            if (this._Capacity == 0)
+            {
+                return false;
+            }
+
+            ref Entry entry = ref Unsafe.NullRef<Entry>();
+            ref TValue value = ref Unsafe.NullRef<TValue>();
+
+            if (this._Buckets != null)
+            {
+                uint hashcode = (uint)key.GetHashCode();
+                int modulus = (int)(hashcode % this._Capacity);
+                ref Entry[] entries = ref this._Entries!;
+                if (this._Buckets[modulus] == 0)
+                {
+                    return false;
+                }
+                else
+                {
+                    int next_index = this._Buckets[modulus] - 1;
+                    int last_index = this._Buckets[modulus] - 1;
+                    while (next_index != -1)
+                    {
+                        entry = ref this._Entries[next_index];
+                        if (entry._Hashcode == hashcode && EqualityComparer<TKey>.Default.Equals(entry.key, key))
+                        {
+                            entry._Hashcode = default!;
+                            entry.key = default!;
+                            entry.value = default!;
+                            this._Count--;
+                            this._Free_list = next_index;
+                            entries[last_index]._Next = entry._Next;
+                            return true;
+                        }
+                        last_index = next_index;
+                        next_index = entry._Next;
+                    }
+                }
+            }
+
+            return false;
         }
 
         public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value)
@@ -319,22 +364,65 @@ namespace MyCollection
 
         public void Clear()
         {
-            throw new NotImplementedException();
+            if (this._Count > 0)
+            {
+                Array.Clear(this._Buckets);
+                Array.Clear(this._Entries);
+            }
         }
 
         public bool Contains(KeyValuePair<TKey, TValue> item)
         {
-            throw new NotImplementedException();
+            ref TValue get_value = ref this.FindValue(item.Key);
+            if (get_value == null)
+            {
+                return false;
+            }
+            else if (get_value.Equals(item.Value))
+            {
+                return true;
+            }
+            return false;
         }
 
-        public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
+        private void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
         {
-            throw new NotImplementedException();
+            if (array == null)
+            {
+                throw new ArgumentNullException(nameof(array));
+            }
+
+            if ((uint)arrayIndex > (uint)array.Length)
+            {
+                throw new ArgumentOutOfRangeException(nameof(arrayIndex));
+            }
+
+            if (this._Count + arrayIndex > array.Length)
+            {
+                throw new ArgumentOutOfRangeException(nameof(arrayIndex));
+            }
+
+            int count = this._Count;
+            Entry[]? entries = this._Entries;
+            for (int i = 0; i < count; i++)
+            {
+                if (entries![i]._Next >= -1)
+                {
+                    array[arrayIndex++] = new KeyValuePair<TKey, TValue>(entries[i].key, entries[i].value);
+                }
+            }
         }
 
-        public bool Remove(KeyValuePair<TKey, TValue> item)
+        bool Remove(KeyValuePair<TKey, TValue> item)
         {
-            throw new NotImplementedException();
+            ref TValue value = ref FindValue(item.Key);
+            if (!Unsafe.IsNullRef(ref value) && EqualityComparer<TValue>.Default.Equals(value, item.Value))
+            {
+                Remove(item.Key);
+                return true;
+            }
+
+            return false;
         }
 
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
@@ -359,7 +447,7 @@ namespace MyCollection
 
         public bool Contains(object key)
         {
-            throw new NotImplementedException();
+            return this.ContainsKey((TKey)key);
         }
 
         IDictionaryEnumerator IDictionary.GetEnumerator()
@@ -369,7 +457,7 @@ namespace MyCollection
 
         public void Remove(object key)
         {
-            throw new NotImplementedException();
+            this.Remove((TKey)key);
         }
 
         public void CopyTo(Array array, int index)
@@ -378,6 +466,16 @@ namespace MyCollection
         }
 
         IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<TKey>)this).GetEnumerator();
+
+        void ICollection<KeyValuePair<TKey, TValue>>.CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
+        {
+            this.CopyTo(array, arrayIndex);
+        }
+
+        bool ICollection<KeyValuePair<TKey, TValue>>.Remove(KeyValuePair<TKey, TValue> item)
+        {
+            return this.Remove(item.Key);
+        }
     }
     class Program
     {
@@ -401,6 +499,17 @@ namespace MyCollection
             {
                 Console.WriteLine(item);
             }
+
+            Console.WriteLine(my_dictionary.Count);
+
+            my_dictionary.Remove("Australia");
+
+            foreach (var item in my_dictionary)
+            {
+                Console.WriteLine(item);
+            }
+
+            Console.WriteLine(my_dictionary.Count);
         }
     }
 }

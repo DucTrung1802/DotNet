@@ -368,6 +368,7 @@ namespace MyCollection
             {
                 Array.Clear(this._Buckets);
                 Array.Clear(this._Entries);
+                this._Count = 0;
             }
         }
 
@@ -481,35 +482,50 @@ namespace MyCollection
     {
         public static void Main()
         {
+            // Creating a dictionary
+            Dictionary<int, string> myDictionary = new Dictionary<int, string>();
 
-            // Create a new dictionary  
-            // of strings, with string keys. 
-            Dictionary<string, string> my_dictionary =
-               new Dictionary<string, string>();
+            // Adding key-value pairs to the dictionary
+            myDictionary.Add(1, "One");
+            myDictionary.Add(2, "Two");
+            myDictionary.Add(3, "Three");
 
-            // Adding key/value pairs in my_dictionary  
-            my_dictionary["Australia"] = "Canberra";
-            my_dictionary["Belgium"] = "Brussels";
-            my_dictionary["Netherlands"] = "Amsterdam";
-            my_dictionary["China"] = "Beijing";
-            my_dictionary["Russia"] = "Moscow";
-            my_dictionary["India"] = "New Delhi";
+            // Accessing values using keys
+            Console.WriteLine("Value for key 2: " + myDictionary[2]);
 
-            foreach (var item in my_dictionary)
+            // Checking if a key exists
+            int keyToCheck = 4;
+            if (myDictionary.ContainsKey(keyToCheck))
             {
-                Console.WriteLine(item);
+                Console.WriteLine("Key " + keyToCheck + " exists.");
+            }
+            else
+            {
+                Console.WriteLine("Key " + keyToCheck + " does not exist.");
             }
 
-            Console.WriteLine(my_dictionary.Count);
-
-            my_dictionary.Remove("Australia");
-
-            foreach (var item in my_dictionary)
+            // Iterating over key-value pairs in the dictionary
+            Console.WriteLine("All key-value pairs in the dictionary:");
+            foreach (KeyValuePair<int, string> kvp in myDictionary)
             {
-                Console.WriteLine(item);
+                Console.WriteLine("Key: " + kvp.Key + ", Value: " + kvp.Value);
             }
 
-            Console.WriteLine(my_dictionary.Count);
+            // Removing a key-value pair
+            int keyToRemove = 2;
+            if (myDictionary.ContainsKey(keyToRemove))
+            {
+                myDictionary.Remove(keyToRemove);
+                Console.WriteLine("Key " + keyToRemove + " removed.");
+            }
+            else
+            {
+                Console.WriteLine("Key " + keyToRemove + " does not exist, so no removal performed.");
+            }
+
+            // Clearing all key-value pairs from the dictionary
+            myDictionary.Clear();
+            Console.WriteLine("Dictionary cleared. Count: " + myDictionary.Count);
         }
     }
 }

@@ -56,7 +56,30 @@ namespace MyCollection
         object ICollection.SyncRoot => this;
 
         public object? this[object key] { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public TValue this[TKey key] { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public TValue this[TKey key]
+        {
+            get
+            {
+                ref TValue value = ref FindValue(key);
+                if (!Unsafe.IsNullRef(ref value))
+                {
+                    return value;
+                }
+                return default;
+            }
+            set
+            {
+                if (this.ContainsKey(key))
+                {
+                    ref TValue oldValue = ref FindValue(key);
+                    oldValue = value;
+                }
+                else
+                {
+                    this.Add(key, value);
+                }
+            }
+        }
 
         //public TValue this[TKey key] { get; set; }
 
@@ -244,6 +267,11 @@ namespace MyCollection
                 throw new ArgumentNullException(nameof(key));
             }
 
+            if (this._Capacity == 0)
+            {
+                return ref Unsafe.NullRef<TValue>();
+            }
+
             ref Entry entry = ref Unsafe.NullRef<Entry>();
             ref TValue value = ref Unsafe.NullRef<TValue>();
 
@@ -362,14 +390,17 @@ namespace MyCollection
                new Dictionary<string, string>();
 
             // Adding key/value pairs in my_dictionary  
-            my_dictionary.Add("Australia", "Canberra");
-            my_dictionary.Add("Belgium", "Brussels");
-            my_dictionary.Add("Netherlands", "Amsterdam");
-            my_dictionary.Add("China", "Beijing");
-            my_dictionary.Add("Russia", "Moscow");
-            my_dictionary.Add("India", "New Delhi");
+            my_dictionary["Australia"] = "Canberra";
+            my_dictionary["Belgium"] = "Brussels";
+            my_dictionary["Netherlands"] = "Amsterdam";
+            my_dictionary["China"] = "Beijing";
+            my_dictionary["Russia"] = "Moscow";
+            my_dictionary["India"] = "New Delhi";
 
-            Console.WriteLine(my_dictionary.ContainsKey("India"));
+            foreach (var item in my_dictionary)
+            {
+                Console.WriteLine(item);
+            }
         }
     }
 }

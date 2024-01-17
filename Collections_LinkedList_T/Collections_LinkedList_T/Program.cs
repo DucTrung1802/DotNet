@@ -52,6 +52,7 @@ namespace MyCollection
         {
             LinkedListNode<T> new_node = new LinkedListNode<T>(item);
             this.AddFirst(new_node);
+            this.head = new_node;
 
             return this.head!;
         }
@@ -66,6 +67,7 @@ namespace MyCollection
             {
                 this.InternalInsertNodeBefore(this.head, new_node);
             }
+            this.head = new_node;
         }
 
         public LinkedListNode<T> AddLast(T item)
@@ -169,7 +171,8 @@ namespace MyCollection
                 LinkedListNode<T>? temp_node = this.head;
                 for (int i = 0; i < this.count; i++)
                 {
-
+                    yield return temp_node!.item;
+                    temp_node = temp_node.next;
                 }
             }
         }

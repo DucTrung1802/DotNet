@@ -7,11 +7,23 @@ namespace MyCollection
         private LinkedListNode<T>? head;
         private int count;
 
-        private void AddNodeToEmptyLinkedList(LinkedListNode<T> new_node)
+        private void InternalInsertNodeToEmptyList(LinkedListNode<T> new_node)
         {
-            this.head = new_node;
+            new_node.next = new_node;
+            new_node.prev = new_node;
             new_node.list = this;
+            this.head = new_node;
             this.count = 1;
+        }
+
+        private void InternalInsertNodeBefore(LinkedListNode<T> node, LinkedListNode<T> new_node)
+        {
+            new_node.next = node;
+            new_node.prev = node.prev;
+            node.prev!.next = new_node;
+            node.prev = new_node;
+            new_node.list = this;
+            this.count++;
         }
 
         private void ValidateNode(LinkedListNode<T> node)
@@ -20,7 +32,7 @@ namespace MyCollection
 
             if (node.list != this)
             {
-                throw new InvalidOperationException();
+                throw new InvalidOperationException(nameof(node));
             }
         }
 
@@ -36,46 +48,72 @@ namespace MyCollection
             }
         }
 
-        public LinkedListNode<T> AddFrist(T item)
+        public LinkedListNode<T> AddFirst(T item)
         {
             LinkedListNode<T> new_node = new LinkedListNode<T>(item);
+            this.AddFirst(new_node);
+
+            return this.head!;
+        }
+
+        public void AddFirst(LinkedListNode<T> new_node)
+        {
             if (this.head == null)
             {
-                this.AddNodeToEmptyLinkedList(new_node);
+                this.InternalInsertNodeToEmptyList(new_node);
             }
             else
             {
-                new_node.next = this.head;
-                this.head.prev = new_node;
-                new_node.list = this;
-                this.head = new_node;
-                this.count++;
+                this.InternalInsertNodeBefore(this.head, new_node);
             }
-
-            return this.head!;
         }
 
         public LinkedListNode<T> AddLast(T item)
         {
             LinkedListNode<T> new_node = new LinkedListNode<T>(item);
+            this.AddLast(new_node);
+
+            return new_node;
+        }
+
+        public void AddLast(LinkedListNode<T> new_node)
+        {
             if (this.head == null)
             {
-                this.AddNodeToEmptyLinkedList(new_node);
+                this.InternalInsertNodeToEmptyList(new_node);
             }
             else
             {
-                LinkedListNode<T> current_node = this.head;
-                while (current_node.next != null)
-                {
-                    current_node = current_node.next;
-                }
-                new_node.list = this;
-                new_node.prev = current_node;
-                current_node.next = new_node;
-                this.count++;
+                this.InternalInsertNodeBefore(this.head, new_node);
             }
+        }
 
+        public LinkedListNode<T> AddAfter(LinkedListNode<T> node, T value)
+        {
+            this.ValidateNode(node);
+            LinkedListNode<T> new_node = new LinkedListNode<T>(node.list!, value);
+            this.InternalInsertNodeBefore(node.next!, new_node);
             return new_node;
+        }
+
+        public void AddAfter(LinkedListNode<T> node, LinkedListNode<T> new_node)
+        {
+            this.ValidateNode(node);
+            this.InternalInsertNodeBefore(node.next!, new_node);
+        }
+
+        public LinkedListNode<T> AddBefore(LinkedListNode<T> node, T value)
+        {
+            this.ValidateNode(node);
+            LinkedListNode<T> new_node = new LinkedListNode<T>(node.list!, value);
+            this.InternalInsertNodeBefore(node, new_node);
+            return new_node;
+        }
+
+        public void AddBefore(LinkedListNode<T> node, LinkedListNode<T> new_node)
+        {
+            this.ValidateNode(node);
+            this.InternalInsertNodeBefore(node, new_node);
         }
 
         public int Count => throw new NotImplementedException();
@@ -129,10 +167,9 @@ namespace MyCollection
             else
             {
                 LinkedListNode<T>? temp_node = this.head;
-                while (temp_node != null)
+                for (int i = 0; i < this.count; i++)
                 {
-                    yield return temp_node.item;
-                    temp_node = temp_node.next;
+
                 }
             }
         }
@@ -170,10 +207,10 @@ namespace MyCollection
         {
             LinkedList<int> my_linkedlist = new LinkedList<int>();
             my_linkedlist.AddLast(2);
-            my_linkedlist.AddLast(3);
-            my_linkedlist.AddFrist(1);
+            my_linkedlist.AddLast(new LinkedListNode<int>(3));
+            my_linkedlist.AddFirst(1);
             my_linkedlist.AddLast(100);
-            my_linkedlist.AddFrist(0);
+            my_linkedlist.AddFirst(new LinkedListNode<int>(0));
 
             foreach (var item in my_linkedlist)
             {

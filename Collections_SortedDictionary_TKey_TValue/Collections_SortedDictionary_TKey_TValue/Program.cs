@@ -4,8 +4,8 @@ namespace MyCollection
 {
     internal enum NodeColor
     {
-        BLACK,
         RED,
+        BLACK,
     }
 
     internal enum Strategy : byte
@@ -21,7 +21,7 @@ namespace MyCollection
     {
 
         private Node? root;
-        private IComparer<T> comparer = default!;
+        private IComparer<T> comparer = Comparer<T>.Default;
         private int count;
 
         public int Count { get { return this.count; } }
@@ -37,6 +37,18 @@ namespace MyCollection
         bool ICollection.IsSynchronized => false;
 
         object ICollection.SyncRoot => this;
+
+        public SortedSet()
+        {
+        }
+
+        public SortedSet(IEnumerable<T> collection)
+        {
+            foreach (var item in collection)
+            {
+                this.Add(item);
+            }
+        }
 
         public bool Contains(T item) => FindNode(item) != null;
 
@@ -465,29 +477,13 @@ namespace MyCollection
             throw new NotImplementedException();
         }
 
-        private void InternalShowDiagram(Node current, int indent)
+        internal sealed class Node
         {
-            if (current != null)
+            public Node(T item, NodeColor color)
             {
-                InternalShowDiagram(current.Right, indent + 4);
-                Console.Write(new string(' ', indent));
-                Console.WriteLine($"<{current.Item}><{current.Color}>");
-                InternalShowDiagram(current.Left, indent + 4);
+                Item = item;
+                Color = color;
             }
-        }
-
-        public void ShowDiagram()
-        {
-            InternalShowDiagram(root, 0);
-        }
-
-        internal sealed class Node(T item, NodeColor color)
-        {
-            private Node? parent;
-            private Node? left;
-            private Node? right;
-            private T item = item;
-            private NodeColor color = color;
 
             public T Item { get; set; }
 
@@ -532,14 +528,113 @@ namespace MyCollection
                 return this;
             }
         }
-    }
-}
 
-class Program
-{
-    public static void Main()
-    {
-        SortedSet<int> my_set = new SortedSet<int>();
 
+        internal class NodeInfo
+        {
+            public BNode Node;
+            public string Text;
+            public int StartPos;
+            public int Size { get { return Text.Length; } }
+            public int EndPos { get { return StartPos + Size; } set { StartPos = value - Size; } }
+            public NodeInfo Parent, Left, Right;
+
+            public static void Print(this BNode root, int topMargin = 2, int leftMargin = 2)
+            {
+                if (root == null) return;
+                int rootTop = Console.CursorTop + topMargin;
+                var last = new List<NodeInfo>();
+                var next = root;
+                for (int level = 0; next != null; level++)
+                {
+                    var item = new NodeInfo { Node = next, Text = next.item.ToString(" 0 ") };
+                    if (level < last.Count)
+                    {
+                        item.StartPos = last[level].EndPos + 1;
+                        last[level] = item;
+                    }
+                    else
+                    {
+                        item.StartPos = leftMargin;
+                        last.Add(item);
+                    }
+                    if (level > 0)
+                    {
+                        item.Parent = last[level - 1];
+                        if (next == item.Parent.Node.left)
+                        {
+                            item.Parent.Left = item;
+                            item.EndPos = Math.Max(item.EndPos, item.Parent.StartPos);
+                        }
+                        else
+                        {
+                            item.Parent.Right = item;
+                            item.StartPos = Math.Max(item.StartPos, item.Parent.EndPos);
+                        }
+                    }
+                    next = next.left ?? next.right;
+                    for (; next == null; item = item.Parent)
+                    {
+                        Print(item, rootTop + 2 * level);
+                        if (--level < 0) break;
+                        if (item == item.Parent.Left)
+                        {
+                            item.Parent.StartPos = item.EndPos;
+                            next = item.Parent.Node.right;
+                        }
+                        else
+                        {
+                            if (item.Parent.Left == null)
+                                item.Parent.EndPos = item.StartPos;
+                            else
+                                item.Parent.StartPos += (item.StartPos - item.Parent.EndPos) / 2;
+                        }
+                    }
+                }
+                Console.SetCursorPosition(0, rootTop + 2 * last.Count - 1);
+            }
+
+            private static void Print(NodeInfo item, int top)
+            {
+                SwapColors();
+                Print(item.Text, top, item.StartPos);
+                SwapColors();
+                if (item.Left != null)
+                    PrintLink(top + 1, "┌", "┘", item.Left.StartPos + item.Left.Size / 2, item.StartPos);
+                if (item.Right != null)
+                    PrintLink(top + 1, "└", "┐", item.EndPos - 1, item.Right.StartPos + item.Right.Size / 2);
+            }
+
+            private static void PrintLink(int top, string start, string end, int startPos, int endPos)
+            {
+                Print(start, top, startPos);
+                Print("─", top, startPos + 1, endPos);
+                Print(end, top, endPos);
+            }
+
+            private static void Print(string s, int top, int left, int right = -1)
+            {
+                Console.SetCursorPosition(left, top);
+                if (right < 0) right = left + s.Length;
+                while (Console.CursorLeft < right) Console.Write(s);
+            }
+
+            private static void SwapColors()
+            {
+                var color = Console.ForegroundColor;
+                Console.ForegroundColor = Console.BackgroundColor;
+                Console.BackgroundColor = color;
+            }
+        }
+
+
+
+        class Program
+        {
+            public static void Main()
+            {
+                SortedSet<int> my_set = new SortedSet<int>([1, 2]);
+                my_set.Print();
+            }
+        }
     }
-}

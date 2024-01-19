@@ -19,7 +19,6 @@ namespace MyCollection
 
     public class SortedSet<T> : ISet<T>, ICollection<T>, ICollection
     {
-        #region Local variables/constants
 
         private Node? root;
         private IComparer<T> comparer = default!;
@@ -67,12 +66,18 @@ namespace MyCollection
             //      Left Uncle
             // 
             //                  Grandparent
-            //                  /       \
-            //                Uncle     Parent
-            //                            \
-            //                        Current_Node
+            //                   /       \
+            //                 Uncle     Parent
+            //                             \
+            //                         Current_Node
             //
+            //      Right Uncle
             //
+            //                  Grandparent
+            //                   /       \
+            //                Parent    Uncle
+            //                  /          
+            //            Current_Node
             //
             //
 
@@ -86,6 +91,7 @@ namespace MyCollection
                 return NodeColor.RED;
             }
 
+            // Get the color of the Left Uncle
             if (node.Parent.Parent.Right == node.Parent)
             {
                 if (IsNullOrBlack(node.Parent.Parent.Left))
@@ -133,12 +139,93 @@ namespace MyCollection
             return default;
         }
 
-        internal Node RotationLeft(Node node)
+        internal void RotateLeft(Node node)
         {
-            return node;
+            // 
+            //  RotateLeft: Maximum 6 Operations since each line contains 2 relationships.
+            // 
+            //         Parent                           Parent
+            //            |                                |
+            //         DownNode (node)                   UpNode
+            //          /     \          =>              /   \
+            //        ...    UpNode               DownNode    ...
+            //                /  \                 /   \
+            //           SubNode?  ...            ...  SubNode?
+            //
+            //     SubNode maybe NULL
+            //
+            if (node.Right != null)
+            {
+                Node ParentNode = node.Parent!;
+                Node DownNode = node;
+                Node UpNode = node.Right;
+                Node? SubNode = node.Right.Left;
+
+                // Change all upward relationships
+                UpNode.Parent = DownNode.Parent;    // 1/6
+                if (SubNode != null)
+                {
+                    SubNode.Parent = DownNode;      // 2/6
+                }
+                DownNode.Parent = UpNode;           // 3/6
+
+                // Change all downward relationships
+                if (DownNode == ParentNode.Left)
+                {
+                    ParentNode.Left = UpNode;       // 4/6
+                }
+                else if (DownNode == ParentNode.Right)
+                {
+                    ParentNode.Right = UpNode;      // 4/6
+                }
+                UpNode.Left = DownNode;             // 5/6
+                DownNode.Right = SubNode;           // 6/6
+            }
         }
 
+        internal void RotateRight(Node node)
+        {
+            // 
+            //  RotateRight: Maximum 6 Operations since each line contains 2 relationships.
+            // 
+            //         Parent                           Parent
+            //            |                                |
+            //         DownNode (node)                   UpNode
+            //          /     \          =>              /   \
+            //      UpNode    ...                      ...   DownNode    
+            //       /  \                                     /   \
+            //    ...   SubNode?                        SubNode?  ...
+            //
+            //     SubNode maybe NULL
+            //
+            if (node.Left != null)
+            {
+                Node ParentNode = node.Parent!;
+                Node DownNode = node;
+                Node UpNode = node.Left;
+                Node? SubNode = node.Left.Right;
 
+                // Change all upward relationships
+                UpNode.Parent = DownNode.Parent;    // 1/6
+                if (SubNode != null)
+                {
+                    SubNode.Parent = DownNode;      // 2/6
+                }
+                DownNode.Parent = UpNode;           // 3/6
+
+                // Change all downward relationships
+                if (DownNode == ParentNode.Left)
+                {
+                    ParentNode.Left = UpNode;       // 4/6
+                }
+                else if (DownNode == ParentNode.Right)
+                {
+                    ParentNode.Right = UpNode;      // 4/6
+                }
+                UpNode.Right = DownNode;            // 5/6
+                DownNode.Left = SubNode;            // 6/6
+            }
+        }
 
         internal void BalanceTree(Node node)
         {
@@ -153,31 +240,79 @@ namespace MyCollection
                 {
                     node.Parent.Recolor();
                     node.Parent.Parent!.Recolor();
-                    node = node.Parent;
+                    node = node.Parent.Parent;
                 }
 
+                // 
+                //  TRIANGLE_LEFT (BLACK Uncle) => RotateLeft
+                // 
+                //                  Grandparent
+                //                   /       \
+                //                Parent    Uncle
+                //                   \          
+                //                Current_Node
+                //
                 if (this.GetStrategy(node) == Strategy.TRIANGLE_LEFT)
                 {
-                    this.Rotation
+                    // Rotate opposite with current node
+                    this.RotateLeft(node);
                 }
 
+                // 
+                //  TRIANGLE_RIGHT (BLACK Uncle) => RotateRight
+                // 
+                //                  Grandparent
+                //                   /       \
+                //                Uncle    Parent
+                //                           /          
+                //                      Current_Node
+                //
                 if (this.GetStrategy(node) == Strategy.TRIANGLE_RIGHT)
                 {
-
+                    // Rotate opposite with current node
+                    this.RotateRight(node);
                 }
 
+                // 
+                //  LINE_LEFT (BLACK Uncle) => RotateRight
+                // 
+                //                  Grandparent
+                //                   /       \
+                //                Parent    Uncle
+                //                  /          
+                //             Current_Node
+                //
                 if (this.GetStrategy(node) == Strategy.LINE_LEFT)
                 {
-
+                    // Change to Grandparent
+                    // Rotate opposite with current node
+                    if (node.Parent!.Parent != null)
+                    {
+                        node = node.Parent.Parent;
+                        this.RotateRight(node);
+                    }
                 }
 
+                // 
+                //  LINE_RIGHT (BLACK Uncle) => RotateLeft
+                // 
+                //                  Grandparent
+                //                   /       \
+                //                Uncle    Parent
+                //                            \          
+                //                        Current_Node
+                //
                 if (this.GetStrategy(node) == Strategy.LINE_RIGHT)
                 {
-
+                    // Change to Grandparent
+                    // Rotate opposite with current node
+                    if (node.Parent!.Parent != null)
+                    {
+                        node = node.Parent.Parent;
+                        this.RotateLeft(node);
+                    }
                 }
-
             }
-
         }
 
         public bool Add(T item)
@@ -330,7 +465,21 @@ namespace MyCollection
             throw new NotImplementedException();
         }
 
-        #endregion
+        private void InternalShowDiagram(Node current, int indent)
+        {
+            if (current != null)
+            {
+                InternalShowDiagram(current.Right, indent + 4);
+                Console.Write(new string(' ', indent));
+                Console.WriteLine($"<{current.Item}><{current.Color}>");
+                InternalShowDiagram(current.Left, indent + 4);
+            }
+        }
+
+        public void ShowDiagram()
+        {
+            InternalShowDiagram(root, 0);
+        }
 
         internal sealed class Node(T item, NodeColor color)
         {
@@ -383,5 +532,14 @@ namespace MyCollection
                 return this;
             }
         }
+    }
+}
+
+class Program
+{
+    public static void Main()
+    {
+        SortedSet<int> my_set = new SortedSet<int>();
+
     }
 }

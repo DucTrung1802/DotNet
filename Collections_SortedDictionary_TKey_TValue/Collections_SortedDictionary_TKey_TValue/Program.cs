@@ -27,6 +27,12 @@ namespace MyCollection
 
         public int Count { get { return this.count; } }
 
+        internal static bool IsNonNullBlack(Node? node) => node != null && node.IsBlack;
+
+        internal static bool IsNonNullRed(Node? node) => node != null && node.IsRed;
+
+        internal static bool IsNullOrBlack(Node? node) => node == null || node.IsBlack;
+
         bool ICollection<T>.IsReadOnly => false;
 
         bool ICollection.IsSynchronized => false;
@@ -53,12 +59,125 @@ namespace MyCollection
 
         internal NodeColor GetUncleColor(Node node)
         {
-            return;
+            if (node == null || node.Parent == null || node.Parent.Parent == null)
+            {
+                throw new ArgumentNullException("node.Parent.Parent is NULL");
+            }
+
+            //      Left Uncle
+            // 
+            //                  Grandparent
+            //                  /       \
+            //                Uncle     Parent
+            //                            \
+            //                        Current_Node
+            //
+            //
+            //
+            //
+
+            // Get the color of the Left Uncle
+            if (node.Parent.Parent.Left == node.Parent)
+            {
+                if (IsNullOrBlack(node.Parent.Parent.Right))
+                {
+                    return NodeColor.BLACK;
+                }
+                return NodeColor.RED;
+            }
+
+            if (node.Parent.Parent.Right == node.Parent)
+            {
+                if (IsNullOrBlack(node.Parent.Parent.Left))
+                {
+                    return NodeColor.BLACK;
+                }
+                return NodeColor.RED;
+            }
+
+            return default;
         }
 
         internal Strategy GetStrategy(Node node)
         {
-            return;
+            if (node == null || node.Parent == null || node.Parent.Parent == null)
+            {
+                throw new ArgumentNullException("node.Parent.Parent is NULL");
+            }
+
+            if (this.GetUncleColor(node) == NodeColor.RED)
+            {
+                return Strategy.UNCLE_RED;
+            }
+
+            if (node.Parent == node.Parent.Parent.Left && node == node.Parent.Right)
+            {
+                return Strategy.TRIANGLE_LEFT;
+            }
+
+            if (node.Parent == node.Parent.Parent.Right && node == node.Parent.Left)
+            {
+                return Strategy.TRIANGLE_RIGHT;
+            }
+
+            if (node.Parent == node.Parent.Parent.Left && node == node.Parent.Left)
+            {
+                return Strategy.LINE_LEFT;
+            }
+
+            if (node.Parent == node.Parent.Parent.Right && node == node.Parent.Right)
+            {
+                return Strategy.LINE_RIGHT;
+            }
+
+            return default;
+        }
+
+        internal Node RotationLeft(Node node)
+        {
+            return node;
+        }
+
+
+
+        internal void BalanceTree(Node node)
+        {
+            if (node == null || node.Parent == null || node.Parent.Parent == null)
+            {
+                return;
+            }
+
+            while (node.Parent != null && node.Color == NodeColor.RED && node.Parent.Color == NodeColor.RED)
+            {
+                if (this.GetStrategy(node) == Strategy.UNCLE_RED)
+                {
+                    node.Parent.Recolor();
+                    node.Parent.Parent!.Recolor();
+                    node = node.Parent;
+                }
+
+                if (this.GetStrategy(node) == Strategy.TRIANGLE_LEFT)
+                {
+                    this.Rotation
+                }
+
+                if (this.GetStrategy(node) == Strategy.TRIANGLE_RIGHT)
+                {
+
+                }
+
+                if (this.GetStrategy(node) == Strategy.LINE_LEFT)
+                {
+
+                }
+
+                if (this.GetStrategy(node) == Strategy.LINE_RIGHT)
+                {
+
+                }
+
+            }
+
         }
 
         public bool Add(T item)
@@ -67,6 +186,7 @@ namespace MyCollection
             {
                 Node new_node = new Node(item, NodeColor.RED);
 
+                // Case 1: The Tree is NULL => Just add and color BLACK
                 if (this.root == null)
                 {
                     new_node.ColorBlack();
@@ -77,6 +197,7 @@ namespace MyCollection
 
                 Node? current_node = this.root;
 
+                // Case 2: The Tree root has no Left child => Add to Left child
                 if (current_node.Left == null
                     && comparer.Compare(new_node.Item, current_node.Item) < 0)
                 {
@@ -85,6 +206,8 @@ namespace MyCollection
                     this.count++;
                     return true;
                 }
+
+                // Case 3: The Tree root has no Right child => Add to Right child
                 else if (current_node.Right == null
                     && comparer.Compare(new_node.Item, current_node.Item) < 0)
                 {
@@ -94,11 +217,13 @@ namespace MyCollection
                     return true;
                 }
 
+                // Travel to the suitable NIL node before adding
                 while (current_node.Left != null && current_node.Right != null)
                 {
                     current_node = comparer.Compare(item, current_node.Item) < 0 ? current_node.Left : current_node.Right;
                 }
 
+                // Add node
                 if (comparer.Compare(item, current_node.Item) < 0)
                 {
                     current_node.Left = new_node;
@@ -112,6 +237,9 @@ namespace MyCollection
                     this.count++;
                 }
 
+                // Rebalance the Tree
+                this.BalanceTree(new_node);
+                return true;
             }
 
             return false;
@@ -212,10 +340,6 @@ namespace MyCollection
             private T item = item;
             private NodeColor color = color;
 
-            public static bool IsNonNullBlack(Node? node) => node != null && node.IsBlack;
-
-            public static bool IsNonNullRed(Node? node) => node != null && node.IsRed;
-
             public T Item { get; set; }
 
             public Node? Parent { get; set; }
@@ -233,6 +357,15 @@ namespace MyCollection
             public void ColorBlack() => Color = NodeColor.BLACK;
 
             public void ColorRed() => Color = NodeColor.RED;
+
+            public void Recolor()
+            {
+                if (Color == NodeColor.RED)
+                {
+                    Color = NodeColor.BLACK;
+                }
+                Color = NodeColor.RED;
+            }
 
             internal Node Rotation(Strategy strategy)
             {

@@ -4,8 +4,8 @@ namespace MyCollection
 {
     internal enum NodeColor
     {
-        BLACK,
-        RED,
+        BLACK = 'B',
+        RED = 'R',
     }
 
     internal enum Strategy : byte
@@ -23,6 +23,8 @@ namespace MyCollection
         private Node? root;
         private IComparer<T> comparer = Comparer<T>.Default;
         private int count;
+        private int deep;
+        private int totalConsoleWidth = 250;
 
         public int Count { get { return this.count; } }
 
@@ -523,6 +525,106 @@ namespace MyCollection
             throw new NotImplementedException();
         }
 
+        // Print the tree diagram
+        int max_pad = 100;
+
+        private void PrintPad(int number)
+        {
+            for (int i = 0; i < number; i++)
+            {
+                Console.Write(' ');
+            }
+        }
+
+        private List<List<string>>? GetLevels()
+        {
+            if (this.root != null)
+            {
+                this.deep = this.GetDepth();
+                List<List<string>> result = new List<List<string>>();
+                for (int i = 0; i < this.deep; i++)
+                {
+                    result.Add(new List<string>());
+                }
+                GetLevelsHelper(this.root, 0, result);
+                return result;
+            }
+            return null;
+        }
+
+        private void GetLevelsHelper(Node? node, int level, List<List<string>> result)
+        {
+            if (node == null)
+            {
+                result[level].Add("NIL");
+                if (level < this.deep - 1)
+                {
+                    result[level + 1].Add("NIL");
+                    result[level + 1].Add("NIL");
+                }
+            }
+            else
+            {
+                result[level].Add(node.Item.ToString() + (char)node.Color);
+
+                if (level < this.deep - 1)
+                {
+                    GetLevelsHelper(node.Left, level + 1, result);
+                    GetLevelsHelper(node.Right, level + 1, result);
+                }
+            }
+        }
+
+        public void ShowTreeDiagram()
+        {
+            List<List<string>> levels = this.GetLevels();
+            if (levels != null)
+            {
+                bool lastLineIsAllNil = true;
+                foreach (var value in levels[levels.Count - 1])
+                {
+                    if (value != null)
+                    {
+                        lastLineIsAllNil = false;
+                        break;
+                    }
+                }
+
+                // Print levels with proper padding
+                for (int i = 0; i < levels.Count - (lastLineIsAllNil ? 1 : 0); i++)
+                {
+                    int totalNodes = levels[i].Count;
+                    int spaceBetweenNodes = this.totalConsoleWidth / (totalNodes + 1);
+
+                    foreach (var value in levels[i])
+                    {
+                        string nodeValue = value != null ? value.ToString() : "NIL";
+                        Console.Write(nodeValue.PadLeft(spaceBetweenNodes / 2).PadRight(spaceBetweenNodes / 2));
+                    }
+                    Console.WriteLine();
+                }
+            }
+        }
+
+        public int GetDepth()
+        {
+            return GetDepthHelper(this.root);
+        }
+
+        private int GetDepthHelper(Node? node)
+        {
+            if (node == null)
+            {
+                return 0;
+            }
+
+            int leftDepth = GetDepthHelper(node.Left);
+            int rightDepth = GetDepthHelper(node.Right);
+
+            // The depth of the tree is the maximum depth of its left and right subtrees, plus 1 for the current node
+            return Math.Max(leftDepth, rightDepth) + 1;
+        }
+
         internal sealed class Node
         {
             public Node(T item, NodeColor color)
@@ -573,8 +675,8 @@ namespace MyCollection
     {
         public static void Main()
         {
-            SortedSet<int> my_set = new SortedSet<int>([2, 5, 6, 19, 10, 9]);
-
+            SortedSet<int> my_set = new SortedSet<int>([43, 12, 76, 29, 58, 91, 34, 72, 19, 50, 87, 5, 23, 69, 81, 37, 99, 64, 10, 53]);
+            my_set.ShowTreeDiagram();
         }
     }
 }

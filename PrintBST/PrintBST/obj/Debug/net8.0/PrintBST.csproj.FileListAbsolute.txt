@@ -1,0 +1,15 @@
+D:\FPT\GIT\DotNet\PrintBST\PrintBST\bin\Debug\net8.0\PrintBST.exe
+D:\FPT\GIT\DotNet\PrintBST\PrintBST\bin\Debug\net8.0\PrintBST.deps.json
+D:\FPT\GIT\DotNet\PrintBST\PrintBST\bin\Debug\net8.0\PrintBST.runtimeconfig.json
+D:\FPT\GIT\DotNet\PrintBST\PrintBST\bin\Debug\net8.0\PrintBST.dll
+D:\FPT\GIT\DotNet\PrintBST\PrintBST\bin\Debug\net8.0\PrintBST.pdb
+D:\FPT\GIT\DotNet\PrintBST\PrintBST\obj\Debug\net8.0\PrintBST.GeneratedMSBuildEditorConfig.editorconfig
+D:\FPT\GIT\DotNet\PrintBST\PrintBST\obj\Debug\net8.0\PrintBST.AssemblyInfoInputs.cache
+D:\FPT\GIT\DotNet\PrintBST\PrintBST\obj\Debug\net8.0\PrintBST.AssemblyInfo.cs
+D:\FPT\GIT\DotNet\PrintBST\PrintBST\obj\Debug\net8.0\PrintBST.csproj.CoreCompileInputs.cache
+D:\FPT\GIT\DotNet\PrintBST\PrintBST\obj\Debug\net8.0\PrintBST.sourcelink.json
+D:\FPT\GIT\DotNet\PrintBST\PrintBST\obj\Debug\net8.0\PrintBST.dll
+D:\FPT\GIT\DotNet\PrintBST\PrintBST\obj\Debug\net8.0\refint\PrintBST.dll
+D:\FPT\GIT\DotNet\PrintBST\PrintBST\obj\Debug\net8.0\PrintBST.pdb
+D:\FPT\GIT\DotNet\PrintBST\PrintBST\obj\Debug\net8.0\PrintBST.genruntimeconfig.cache
+D:\FPT\GIT\DotNet\PrintBST\PrintBST\obj\Debug\net8.0\ref\PrintBST.dll

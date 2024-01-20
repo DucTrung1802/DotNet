@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Collections_SortedDictionary_TKey_TValue")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6c3c67b522610a9baf26b41b1dc6345e71b81440")]
 [assembly: System.Reflection.AssemblyProductAttribute("Collections_SortedDictionary_TKey_TValue")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Collections_SortedDictionary_TKey_TValue")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

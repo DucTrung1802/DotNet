@@ -168,30 +168,38 @@ namespace MyCollection
             //
             if (node.Right != null)
             {
-                Node ParentNode = node.Parent!;
+                Node? ParentNode = node.Parent;
                 Node DownNode = node;
                 Node UpNode = node.Right;
                 Node? SubNode = node.Right.Left;
 
-                // Change all upward relationships
-                UpNode.Parent = DownNode.Parent;    // 1/6
                 if (SubNode != null)
                 {
-                    SubNode.Parent = DownNode;      // 2/6
+                    SubNode.Parent = DownNode;
                 }
-                DownNode.Parent = UpNode;           // 3/6
 
-                // Change all downward relationships
-                if (DownNode == ParentNode.Left)
+                UpNode.Left = DownNode;
+                DownNode.Right = SubNode;
+                DownNode.Parent = UpNode;
+
+                if (ParentNode != null)
                 {
-                    ParentNode.Left = UpNode;       // 4/6
+                    UpNode.Parent = DownNode.Parent;
+
+                    if (DownNode == ParentNode.Left)
+                    {
+                        ParentNode.Left = UpNode;
+                    }
+                    else if (DownNode == ParentNode.Right)
+                    {
+                        ParentNode.Right = UpNode;
+                    }
                 }
-                else if (DownNode == ParentNode.Right)
+                else
                 {
-                    ParentNode.Right = UpNode;      // 4/6
+                    UpNode.Parent = null;
+                    this.root = UpNode;
                 }
-                UpNode.Left = DownNode;             // 5/6
-                DownNode.Right = SubNode;           // 6/6
             }
         }
 
@@ -217,25 +225,33 @@ namespace MyCollection
                 Node UpNode = node.Left;
                 Node? SubNode = node.Left.Right;
 
-                // Change all upward relationships
-                UpNode.Parent = DownNode.Parent;    // 1/6
                 if (SubNode != null)
                 {
-                    SubNode.Parent = DownNode;      // 2/6
+                    SubNode.Parent = DownNode;
                 }
-                DownNode.Parent = UpNode;           // 3/6
 
-                // Change all downward relationships
-                if (DownNode == ParentNode.Left)
+                UpNode.Right = DownNode;
+                DownNode.Left = SubNode;
+                DownNode.Parent = UpNode;
+
+                if (ParentNode != null)
                 {
-                    ParentNode.Left = UpNode;       // 4/6
+                    UpNode.Parent = DownNode.Parent;
+
+                    if (DownNode == ParentNode.Right)
+                    {
+                        ParentNode.Right = UpNode;
+                    }
+                    else if (DownNode == ParentNode.Left)
+                    {
+                        ParentNode.Left = UpNode;
+                    }
                 }
-                else if (DownNode == ParentNode.Right)
+                else
                 {
-                    ParentNode.Right = UpNode;      // 4/6
+                    UpNode.Parent = null;
+                    this.root = UpNode;
                 }
-                UpNode.Right = DownNode;            // 5/6
-                DownNode.Left = SubNode;            // 6/6
             }
         }
 
@@ -248,11 +264,16 @@ namespace MyCollection
 
             while (node.Parent != null && node.Color == NodeColor.RED && node.Parent.Color == NodeColor.RED)
             {
-                if (this.GetStrategy(node) == Strategy.UNCLE_RED)
+                Strategy current_strategy = this.GetStrategy(node);
+                if (current_strategy == Strategy.UNCLE_RED)
                 {
-                    node.Parent.Recolor();
-                    node.Parent.Parent!.Recolor();
-                    node = node.Parent.Parent;
+                    node.Parent.Parent!.Left!.Recolor();
+                    node.Parent.Parent!.Right!.Recolor();
+                    if (node.Parent.Parent != this.root)
+                    {
+                        node.Parent.Parent!.Recolor();
+                    }
+                    node = node.Parent.Parent!;
                 }
 
                 // 
@@ -264,7 +285,7 @@ namespace MyCollection
                 //                   \          
                 //                Current_Node
                 //
-                if (this.GetStrategy(node) == Strategy.TRIANGLE_LEFT)
+                else if (current_strategy == Strategy.TRIANGLE_LEFT)
                 {
                     // Rotate opposite with current node
                     this.RotateLeft(node);
@@ -279,7 +300,7 @@ namespace MyCollection
                 //                           /          
                 //                      Current_Node
                 //
-                if (this.GetStrategy(node) == Strategy.TRIANGLE_RIGHT)
+                else if (current_strategy == Strategy.TRIANGLE_RIGHT)
                 {
                     // Rotate opposite with current node
                     this.RotateRight(node);
@@ -294,7 +315,7 @@ namespace MyCollection
                 //                  /          
                 //             Current_Node
                 //
-                if (this.GetStrategy(node) == Strategy.LINE_LEFT)
+                else if (current_strategy == Strategy.LINE_LEFT)
                 {
                     // Change to Grandparent
                     // Rotate opposite with current node
@@ -302,6 +323,8 @@ namespace MyCollection
                     {
                         node = node.Parent.Parent;
                         this.RotateRight(node);
+                        node.Recolor();
+                        node.Parent!.Recolor();
                     }
                 }
 
@@ -314,7 +337,7 @@ namespace MyCollection
                 //                            \          
                 //                        Current_Node
                 //
-                if (this.GetStrategy(node) == Strategy.LINE_RIGHT)
+                else if (current_strategy == Strategy.LINE_RIGHT)
                 {
                     // Change to Grandparent
                     // Rotate opposite with current node
@@ -322,6 +345,8 @@ namespace MyCollection
                     {
                         node = node.Parent.Parent;
                         this.RotateLeft(node);
+                        node.Recolor();
+                        node.Parent!.Recolor();
                     }
                 }
             }
@@ -364,10 +389,15 @@ namespace MyCollection
                     return true;
                 }
 
-                // Travel to the suitable NIL node before adding
-                while (current_node.Left != null && current_node.Right != null)
+                // Travel to the suitable NIL node before 
+                while (current_node.Left != null && comparer.Compare(item, current_node.Item) < 0)
                 {
-                    current_node = comparer.Compare(item, current_node.Item) < 0 ? current_node.Left : current_node.Right;
+                    current_node = current_node.Left;
+                }
+
+                while (current_node.Right != null && comparer.Compare(item, current_node.Item) > 0)
+                {
+                    current_node = current_node.Right;
                 }
 
                 // Add node
@@ -477,6 +507,31 @@ namespace MyCollection
             throw new NotImplementedException();
         }
 
+        public List<string> GetRowValues()
+        {
+            List<string> result = new List<string>();
+
+            if (this.root == null)
+                return result;
+
+            Queue<Node> queue = new Queue<Node>();
+            queue.Enqueue(this.root);
+
+            while (queue.Count > 0)
+            {
+                Node currentNode = queue.Dequeue();
+                result.Add(currentNode.Item.ToString());
+
+                if (currentNode.Left != null)
+                    queue.Enqueue(currentNode.Left);
+
+                if (currentNode.Right != null)
+                    queue.Enqueue(currentNode.Right);
+            }
+
+            return result;
+        }
+
         internal sealed class Node
         {
             public Node(T item, NodeColor color)
@@ -503,14 +558,7 @@ namespace MyCollection
 
             public void ColorRed() => Color = NodeColor.RED;
 
-            public void Recolor()
-            {
-                if (Color == NodeColor.RED)
-                {
-                    Color = NodeColor.BLACK;
-                }
-                Color = NodeColor.RED;
-            }
+            public void Recolor() => Color = Color == NodeColor.RED ? NodeColor.BLACK : NodeColor.RED;
 
             internal Node Rotation(Strategy strategy)
             {
@@ -528,113 +576,17 @@ namespace MyCollection
                 return this;
             }
         }
+    }
 
-
-        internal class NodeInfo
+    class Program
+    {
+        public static void Main()
         {
-            public BNode Node;
-            public string Text;
-            public int StartPos;
-            public int Size { get { return Text.Length; } }
-            public int EndPos { get { return StartPos + Size; } set { StartPos = value - Size; } }
-            public NodeInfo Parent, Left, Right;
-
-            public static void Print(this BNode root, int topMargin = 2, int leftMargin = 2)
-            {
-                if (root == null) return;
-                int rootTop = Console.CursorTop + topMargin;
-                var last = new List<NodeInfo>();
-                var next = root;
-                for (int level = 0; next != null; level++)
-                {
-                    var item = new NodeInfo { Node = next, Text = next.item.ToString(" 0 ") };
-                    if (level < last.Count)
-                    {
-                        item.StartPos = last[level].EndPos + 1;
-                        last[level] = item;
-                    }
-                    else
-                    {
-                        item.StartPos = leftMargin;
-                        last.Add(item);
-                    }
-                    if (level > 0)
-                    {
-                        item.Parent = last[level - 1];
-                        if (next == item.Parent.Node.left)
-                        {
-                            item.Parent.Left = item;
-                            item.EndPos = Math.Max(item.EndPos, item.Parent.StartPos);
-                        }
-                        else
-                        {
-                            item.Parent.Right = item;
-                            item.StartPos = Math.Max(item.StartPos, item.Parent.EndPos);
-                        }
-                    }
-                    next = next.left ?? next.right;
-                    for (; next == null; item = item.Parent)
-                    {
-                        Print(item, rootTop + 2 * level);
-                        if (--level < 0) break;
-                        if (item == item.Parent.Left)
-                        {
-                            item.Parent.StartPos = item.EndPos;
-                            next = item.Parent.Node.right;
-                        }
-                        else
-                        {
-                            if (item.Parent.Left == null)
-                                item.Parent.EndPos = item.StartPos;
-                            else
-                                item.Parent.StartPos += (item.StartPos - item.Parent.EndPos) / 2;
-                        }
-                    }
-                }
-                Console.SetCursorPosition(0, rootTop + 2 * last.Count - 1);
-            }
-
-            private static void Print(NodeInfo item, int top)
-            {
-                SwapColors();
-                Print(item.Text, top, item.StartPos);
-                SwapColors();
-                if (item.Left != null)
-                    PrintLink(top + 1, "┌", "┘", item.Left.StartPos + item.Left.Size / 2, item.StartPos);
-                if (item.Right != null)
-                    PrintLink(top + 1, "└", "┐", item.EndPos - 1, item.Right.StartPos + item.Right.Size / 2);
-            }
-
-            private static void PrintLink(int top, string start, string end, int startPos, int endPos)
-            {
-                Print(start, top, startPos);
-                Print("─", top, startPos + 1, endPos);
-                Print(end, top, endPos);
-            }
-
-            private static void Print(string s, int top, int left, int right = -1)
-            {
-                Console.SetCursorPosition(left, top);
-                if (right < 0) right = left + s.Length;
-                while (Console.CursorLeft < right) Console.Write(s);
-            }
-
-            private static void SwapColors()
-            {
-                var color = Console.ForegroundColor;
-                Console.ForegroundColor = Console.BackgroundColor;
-                Console.BackgroundColor = color;
-            }
-        }
-
-
-
-        class Program
-        {
-            public static void Main()
-            {
-                SortedSet<int> my_set = new SortedSet<int>([1, 2]);
-                my_set.Print();
-            }
+            SortedSet<int> my_set = new SortedSet<int>([2, 5, 6, 19, 10, 9]);
+            //foreach (var item in my_set.GetRowValues())
+            //{
+            //    Console.Write(item + " ");
+            //}
         }
     }
+}

@@ -4,8 +4,8 @@ namespace MyCollection
 {
     internal enum NodeColor
     {
-        RED,
         BLACK,
+        RED,
     }
 
     internal enum Strategy : byte
@@ -151,7 +151,7 @@ namespace MyCollection
             return default;
         }
 
-        internal void RotateLeft(Node node)
+        internal Node RotateLeft(Node node)
         {
             // 
             //  RotateLeft: Maximum 6 Operations since each line contains 2 relationships.
@@ -184,7 +184,7 @@ namespace MyCollection
 
                 if (ParentNode != null)
                 {
-                    UpNode.Parent = DownNode.Parent;
+                    UpNode.Parent = ParentNode;
 
                     if (DownNode == ParentNode.Left)
                     {
@@ -200,10 +200,14 @@ namespace MyCollection
                     UpNode.Parent = null;
                     this.root = UpNode;
                 }
+
+                return DownNode;
             }
+
+            return node;
         }
 
-        internal void RotateRight(Node node)
+        internal Node RotateRight(Node node)
         {
             // 
             //  RotateRight: Maximum 6 Operations since each line contains 2 relationships.
@@ -236,7 +240,7 @@ namespace MyCollection
 
                 if (ParentNode != null)
                 {
-                    UpNode.Parent = DownNode.Parent;
+                    UpNode.Parent = ParentNode;
 
                     if (DownNode == ParentNode.Right)
                     {
@@ -252,7 +256,11 @@ namespace MyCollection
                     UpNode.Parent = null;
                     this.root = UpNode;
                 }
+
+                return DownNode;
             }
+
+            return node;
         }
 
         internal void BalanceTree(Node node)
@@ -287,8 +295,10 @@ namespace MyCollection
                 //
                 else if (current_strategy == Strategy.TRIANGLE_LEFT)
                 {
+                    // Change to Parent
                     // Rotate opposite with current node
-                    this.RotateLeft(node);
+                    node = node.Parent;
+                    node = this.RotateLeft(node);
                 }
 
                 // 
@@ -302,8 +312,10 @@ namespace MyCollection
                 //
                 else if (current_strategy == Strategy.TRIANGLE_RIGHT)
                 {
+                    // Change to Parent
                     // Rotate opposite with current node
-                    this.RotateRight(node);
+                    node = node.Parent;
+                    node = this.RotateRight(node);
                 }
 
                 // 
@@ -322,7 +334,7 @@ namespace MyCollection
                     if (node.Parent!.Parent != null)
                     {
                         node = node.Parent.Parent;
-                        this.RotateRight(node);
+                        node = this.RotateRight(node);
                         node.Recolor();
                         node.Parent!.Recolor();
                     }
@@ -344,7 +356,7 @@ namespace MyCollection
                     if (node.Parent!.Parent != null)
                     {
                         node = node.Parent.Parent;
-                        this.RotateLeft(node);
+                        node = this.RotateLeft(node);
                         node.Recolor();
                         node.Parent!.Recolor();
                     }
@@ -390,14 +402,18 @@ namespace MyCollection
                 }
 
                 // Travel to the suitable NIL node before 
-                while (current_node.Left != null && comparer.Compare(item, current_node.Item) < 0)
+                while ((current_node.Left != null && comparer.Compare(item, current_node.Item) < 0)
+                    || (current_node.Right != null && comparer.Compare(item, current_node.Item) > 0))
                 {
-                    current_node = current_node.Left;
-                }
+                    if (current_node.Left != null && comparer.Compare(item, current_node.Item) < 0)
+                    {
+                        current_node = current_node.Left;
+                    }
 
-                while (current_node.Right != null && comparer.Compare(item, current_node.Item) > 0)
-                {
-                    current_node = current_node.Right;
+                    if (current_node.Right != null && comparer.Compare(item, current_node.Item) > 0)
+                    {
+                        current_node = current_node.Right;
+                    }
                 }
 
                 // Add node
@@ -507,31 +523,6 @@ namespace MyCollection
             throw new NotImplementedException();
         }
 
-        public List<string> GetRowValues()
-        {
-            List<string> result = new List<string>();
-
-            if (this.root == null)
-                return result;
-
-            Queue<Node> queue = new Queue<Node>();
-            queue.Enqueue(this.root);
-
-            while (queue.Count > 0)
-            {
-                Node currentNode = queue.Dequeue();
-                result.Add(currentNode.Item.ToString());
-
-                if (currentNode.Left != null)
-                    queue.Enqueue(currentNode.Left);
-
-                if (currentNode.Right != null)
-                    queue.Enqueue(currentNode.Right);
-            }
-
-            return result;
-        }
-
         internal sealed class Node
         {
             public Node(T item, NodeColor color)
@@ -583,10 +574,7 @@ namespace MyCollection
         public static void Main()
         {
             SortedSet<int> my_set = new SortedSet<int>([2, 5, 6, 19, 10, 9]);
-            //foreach (var item in my_set.GetRowValues())
-            //{
-            //    Console.Write(item + " ");
-            //}
+
         }
     }
 }

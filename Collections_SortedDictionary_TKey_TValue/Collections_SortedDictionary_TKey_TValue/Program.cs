@@ -403,7 +403,7 @@ namespace MyCollection
                     return true;
                 }
 
-                // Travel to the suitable NIL node before 
+                // Travel to the suitable parent node
                 while ((current_node.Left != null && comparer.Compare(item, current_node.Item) < 0)
                     || (current_node.Right != null && comparer.Compare(item, current_node.Item) > 0))
                 {
@@ -440,9 +440,150 @@ namespace MyCollection
             return false;
         }
 
+        // Plug single child to parent of the current node, delete current node
+        private Node? Transplant(Node? current_node)
+        {
+            if (current_node == null)
+            {
+                throw new ArgumentNullException(nameof(current_node));
+            }
+
+            if (current_node.Left != null && current_node.Right != null)
+            {
+                throw new ArgumentException("Transplant must be applied for the node having single child!");
+            }
+
+            if (current_node.Left == null && current_node.Right == null)
+            {
+                // If the current_node is Red => Just delete
+                if (current_node.Parent == null)
+                {
+                    this.root = null;
+                }
+                else if (current_node.Parent.Left == current_node)
+                {
+                    current_node.Parent.Left = null;
+
+                    // If the current_node is Black => Fixup
+                    if (current_node.IsBlack)
+                    {
+                        current_node = this.RotateLeft(current_node.Parent);
+                        if (current_node.Right != null)
+                        {
+                            this.BalanceTree(current_node.Right);
+                        }
+                    }
+                }
+                else if (current_node.Parent.Right == current_node)
+                {
+                    current_node.Parent.Right = null;
+
+                    // If the current_node is Black => Fixup
+                    if (current_node.IsBlack)
+                    {
+                        current_node = this.RotateRight(current_node.Parent);
+                        if (current_node.Left != null)
+                        {
+                            this.BalanceTree(current_node.Left);
+                        }
+                    }
+                }
+
+                this.count--;
+                return null;
+            }
+
+            Node? replacementNode = (current_node.Left != null) ? current_node.Left : current_node.Right;
+
+            if (current_node.Parent != null)
+            {
+                if (current_node.Parent.Left == current_node)
+                {
+                    current_node.Parent.Left = replacementNode;
+                }
+                else
+                {
+                    current_node.Parent.Right = replacementNode;
+                }
+            }
+            else
+            {
+                this.root = replacementNode;
+            }
+
+            if (replacementNode != null)
+            {
+                replacementNode.Parent = current_node.Parent;
+                replacementNode.ColorBlack();
+            }
+
+
+            this.count--;
+            return replacementNode;
+        }
+
+        public bool Remove(T item)
+        {
+            Node? current_node = this.root;
+
+            if (current_node != null)
+            {
+                // Travel to the node
+                while (comparer.Compare(item, current_node.Item) != 0)
+                {
+                    // Travel to left
+                    if (current_node.Left != null && comparer.Compare(item, current_node.Item) < 0)
+                    {
+                        current_node = current_node.Left;
+                    }
+
+                    // Travel to right
+                    else if (current_node.Right != null && comparer.Compare(item, current_node.Item) > 0)
+                    {
+                        current_node = current_node.Right;
+                    }
+
+                    // Item does not exist in the Tree
+                    else
+                    {
+                        return false;
+                    }
+                }
+
+                // Item exists in the Tree
+
+                // Case 1: 2 children are not NIL => Find Max in Left branches, replace current node and delete replace node
+                if (current_node.Left != null && current_node.Right != null)
+                {
+                    Node replace_node = current_node.Left;
+                    while (replace_node.Right != null)
+                    {
+                        replace_node = replace_node.Right;
+                    }
+
+                    current_node.Item = replace_node.Item;
+                    this.Transplant(replace_node);
+                }
+
+                // Case 2: one child is NIL or both children are NIL => Transplant
+                else
+                {
+                    this.Transplant(current_node);
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+
+
+
         public void Clear()
         {
-            throw new NotImplementedException();
+            this.root = null;
+            this.count = 0;
         }
 
         public void CopyTo(T[] array, int arrayIndex)
@@ -491,11 +632,6 @@ namespace MyCollection
         }
 
         public bool Overlaps(IEnumerable<T> other)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Remove(T item)
         {
             throw new NotImplementedException();
         }
@@ -676,6 +812,21 @@ namespace MyCollection
         public static void Main()
         {
             SortedSet<int> my_set = new SortedSet<int>([43, 12, 76, 29, 58, 91, 34, 72, 19, 50, 87, 5, 23, 69, 81, 37, 99, 64, 10, 53]);
+            my_set.ShowTreeDiagram();
+            Console.Write("\n\n");
+            for (int i = 0; i < 120; i++)
+            {
+                Console.Write("=");
+            }
+            Console.Write("\n\n");
+            my_set.Remove(23);
+            my_set.ShowTreeDiagram();
+            for (int i = 0; i < 120; i++)
+            {
+                Console.Write("=");
+            }
+            Console.Write("\n\n");
+            my_set.Remove(19);
             my_set.ShowTreeDiagram();
         }
     }

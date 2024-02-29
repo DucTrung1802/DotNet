@@ -395,7 +395,7 @@ namespace MyCollection
 
                 // Case 3: The Tree root has no Right child => Add to Right child
                 else if (current_node.Right == null
-                    && comparer.Compare(new_node.Item, current_node.Item) < 0)
+                    && comparer.Compare(new_node.Item, current_node.Item) > 0)
                 {
                     current_node.Right = new_node;
                     new_node.Parent = current_node;
@@ -811,22 +811,7 @@ namespace MyCollection
     {
         public static void Main()
         {
-            SortedSet<int> my_set = new SortedSet<int>([43, 12, 76, 29, 58, 91, 34, 72, 19, 50, 87, 5, 23, 69, 81, 37, 99, 64, 10, 53]);
-            my_set.ShowTreeDiagram();
-            Console.Write("\n\n");
-            for (int i = 0; i < 120; i++)
-            {
-                Console.Write("=");
-            }
-            Console.Write("\n\n");
-            my_set.Remove(23);
-            my_set.ShowTreeDiagram();
-            for (int i = 0; i < 120; i++)
-            {
-                Console.Write("=");
-            }
-            Console.Write("\n\n");
-            my_set.Remove(19);
+            SortedSet<int> my_set = new SortedSet<int>([11, 1, 2, 5, 7, 8, 14, 15]);
             my_set.ShowTreeDiagram();
         }
     }

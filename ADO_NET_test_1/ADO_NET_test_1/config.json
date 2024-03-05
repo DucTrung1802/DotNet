@@ -1,0 +1,5 @@
+{
+  "coniguration": {
+    "connection1": "Data Source=localhost;Initial Catalog=BikeStores;User ID=sa;Password=abcd1234"
+  }
+}

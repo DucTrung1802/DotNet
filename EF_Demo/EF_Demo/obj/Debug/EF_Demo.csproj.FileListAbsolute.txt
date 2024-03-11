@@ -1,0 +1,12 @@
+D:\FPT\GIT\DotNet\EF_Demo\EF_Demo\obj\Debug\EF_Demo.csproj.AssemblyReference.cache
+D:\FPT\GIT\DotNet\EF_Demo\EF_Demo\obj\Debug\EF_Demo.csproj.CoreCompileInputs.cache
+D:\FPT\GIT\DotNet\EF_Demo\EF_Demo\bin\Debug\EF_Demo.exe.config
+D:\FPT\GIT\DotNet\EF_Demo\EF_Demo\bin\Debug\EF_Demo.exe
+D:\FPT\GIT\DotNet\EF_Demo\EF_Demo\bin\Debug\EF_Demo.pdb
+D:\FPT\GIT\DotNet\EF_Demo\EF_Demo\bin\Debug\EntityFramework.dll
+D:\FPT\GIT\DotNet\EF_Demo\EF_Demo\bin\Debug\EntityFramework.SqlServer.dll
+D:\FPT\GIT\DotNet\EF_Demo\EF_Demo\bin\Debug\EntityFramework.xml
+D:\FPT\GIT\DotNet\EF_Demo\EF_Demo\bin\Debug\EntityFramework.SqlServer.xml
+D:\FPT\GIT\DotNet\EF_Demo\EF_Demo\obj\Debug\EF_Demo.csproj.CopyComplete
+D:\FPT\GIT\DotNet\EF_Demo\EF_Demo\obj\Debug\EF_Demo.exe
+D:\FPT\GIT\DotNet\EF_Demo\EF_Demo\obj\Debug\EF_Demo.pdb

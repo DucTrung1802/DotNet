@@ -1,0 +1,71 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\FPT\\GIT\\DotNet\\MyFirstWebAPIProject\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{B4ED93F9-3A6C-4CC2-8348-28DF4021AAB7}|MyFirstWebAPIProject\\MyFirstWebAPIProject.csproj|d:\\fpt\\git\\dotnet\\myfirstwebapiproject\\myfirstwebapiproject\\controllers\\productscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B4ED93F9-3A6C-4CC2-8348-28DF4021AAB7}|MyFirstWebAPIProject\\MyFirstWebAPIProject.csproj|solutionrelative:myfirstwebapiproject\\controllers\\productscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B4ED93F9-3A6C-4CC2-8348-28DF4021AAB7}|MyFirstWebAPIProject\\MyFirstWebAPIProject.csproj|d:\\fpt\\git\\dotnet\\myfirstwebapiproject\\myfirstwebapiproject\\weatherforecast.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B4ED93F9-3A6C-4CC2-8348-28DF4021AAB7}|MyFirstWebAPIProject\\MyFirstWebAPIProject.csproj|solutionrelative:myfirstwebapiproject\\weatherforecast.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B4ED93F9-3A6C-4CC2-8348-28DF4021AAB7}|MyFirstWebAPIProject\\MyFirstWebAPIProject.csproj|d:\\fpt\\git\\dotnet\\myfirstwebapiproject\\myfirstwebapiproject\\myfirstwebapiproject.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}",
+      "RelativeMoniker": "D:0:0:{B4ED93F9-3A6C-4CC2-8348-28DF4021AAB7}|MyFirstWebAPIProject\\MyFirstWebAPIProject.csproj|solutionrelative:myfirstwebapiproject\\myfirstwebapiproject.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "WeatherForecast.cs",
+              "DocumentMoniker": "D:\\FPT\\GIT\\DotNet\\MyFirstWebAPIProject\\MyFirstWebAPIProject\\WeatherForecast.cs",
+              "RelativeDocumentMoniker": "MyFirstWebAPIProject\\WeatherForecast.cs",
+              "ToolTip": "D:\\FPT\\GIT\\DotNet\\MyFirstWebAPIProject\\MyFirstWebAPIProject\\WeatherForecast.cs",
+              "RelativeToolTip": "MyFirstWebAPIProject\\WeatherForecast.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-13T10:16:27.709Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "MyFirstWebAPIProject.http",
+              "DocumentMoniker": "D:\\FPT\\GIT\\DotNet\\MyFirstWebAPIProject\\MyFirstWebAPIProject\\MyFirstWebAPIProject.http",
+              "RelativeDocumentMoniker": "MyFirstWebAPIProject\\MyFirstWebAPIProject.http",
+              "ToolTip": "D:\\FPT\\GIT\\DotNet\\MyFirstWebAPIProject\\MyFirstWebAPIProject\\MyFirstWebAPIProject.http",
+              "RelativeToolTip": "MyFirstWebAPIProject\\MyFirstWebAPIProject.http",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAMAAAA1AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003502|",
+              "WhenOpened": "2024-03-13T09:58:05.847Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ProductsController.cs",
+              "DocumentMoniker": "D:\\FPT\\GIT\\DotNet\\MyFirstWebAPIProject\\MyFirstWebAPIProject\\Controllers\\ProductsController.cs",
+              "RelativeDocumentMoniker": "MyFirstWebAPIProject\\Controllers\\ProductsController.cs",
+              "ToolTip": "D:\\FPT\\GIT\\DotNet\\MyFirstWebAPIProject\\MyFirstWebAPIProject\\Controllers\\ProductsController.cs",
+              "RelativeToolTip": "MyFirstWebAPIProject\\Controllers\\ProductsController.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAFIAAAAYAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-13T09:53:45.884Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

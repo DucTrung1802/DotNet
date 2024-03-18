@@ -1,4 +1,5 @@
 ﻿using CRUDinCoreMVC.Models;
+using CRUDinCoreMVC.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -7,18 +8,24 @@ namespace CRUDinCoreMVC.Controllers
 {
     public class EmployeesController : Controller
     {
+        // Other than Employee Entity
         private readonly EFCoreDbContext _context;
 
-        public EmployeesController(EFCoreDbContext context)
+        // For Employee Entity
+        private readonly IEmployeeRepository
+            _employeeRepository;
+
+        public EmployeesController(IEmployeeRepository employeeRepository, EFCoreDbContext context)
         {
+            _employeeRepository = employeeRepository;
             _context = context;
         }
 
         // GET: Employees
         public async Task<IActionResult> Index()
         {
-            var eFCoreDbContext = _context.Employees.Include(e => e.Department);
-            return View(await eFCoreDbContext.ToListAsync());
+            var employees = await _employeeRepository.GetAllAsync();
+            return View(employees);
         }
 
         // GET: Employees/Details/5
@@ -29,9 +36,8 @@ namespace CRUDinCoreMVC.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employees
-                .Include(e => e.Department)
-                .FirstOrDefaultAsync(m => m.EmployeeId == id);
+            var employee = await _employeeRepository.GetByIdAsync(Convert.ToInt32(id));
+
             if (employee == null)
             {
                 return NotFound();
@@ -56,8 +62,8 @@ namespace CRUDinCoreMVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(employee);
-                await _context.SaveChangesAsync();
+                await _employeeRepository.InsertAsync(employee);
+                await _employeeRepository.SaveAsync();
                 return RedirectToAction(nameof(Index));
             }
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "DepartmentId", "Name", employee.DepartmentId);
@@ -72,7 +78,7 @@ namespace CRUDinCoreMVC.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employees.FindAsync(id);
+            var employee = await _employeeRepository.GetByIdAsync(Convert.ToInt32(id));
             if (employee == null)
             {
                 return NotFound();
@@ -97,12 +103,13 @@ namespace CRUDinCoreMVC.Controllers
             {
                 try
                 {
-                    _context.Update(employee);
-                    await _context.SaveChangesAsync();
+                    await _employeeRepository.UpdateAsync(employee);
+                    await _employeeRepository.SaveAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!EmployeeExists(employee.EmployeeId))
+                    var emp = await _employeeRepository.GetByIdAsync(employee.EmployeeId);
+                    if (emp == null)
                     {
                         return NotFound();
                     }
@@ -125,9 +132,7 @@ namespace CRUDinCoreMVC.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employees
-                .Include(e => e.Department)
-                .FirstOrDefaultAsync(m => m.EmployeeId == id);
+            var employee = await _employeeRepository.GetByIdAsync(Convert.ToInt32(id));
             if (employee == null)
             {
                 return NotFound();
@@ -141,13 +146,13 @@ namespace CRUDinCoreMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var employee = await _context.Employees.FindAsync(id);
+            var employee = await _employeeRepository.GetByIdAsync(Convert.ToInt32(id));
             if (employee != null)
             {
-                _context.Employees.Remove(employee);
+                await _employeeRepository.DeleteAsync(id);
             }
 
-            await _context.SaveChangesAsync();
+            await _employeeRepository.SaveAsync();
             return RedirectToAction(nameof(Index));
         }
 

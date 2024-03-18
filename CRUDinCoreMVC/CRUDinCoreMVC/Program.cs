@@ -1,4 +1,5 @@
 using CRUDinCoreMVC.Models;
+using CRUDinCoreMVC.Repository;
 using Microsoft.EntityFrameworkCore;
 
 namespace CRUDinCoreMVC
@@ -17,6 +18,8 @@ namespace CRUDinCoreMVC
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+
 
             var app = builder.Build();
 

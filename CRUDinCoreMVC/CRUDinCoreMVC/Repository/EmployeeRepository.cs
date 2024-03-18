@@ -20,7 +20,7 @@ namespace CRUDinCoreMVC.Repository
         {
             return await _context.Employees.AsNoTracking().Include(e => e.Department).ToListAsync();
         }
-
+  
 
         //Retrieves a single employee by their ID.
         public async Task<Employee?> GetByIdAsync(int EmployeeID)

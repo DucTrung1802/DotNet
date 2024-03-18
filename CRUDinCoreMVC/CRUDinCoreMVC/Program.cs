@@ -18,8 +18,9 @@ namespace CRUDinCoreMVC
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-            builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            //builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
+            builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
             var app = builder.Build();
 

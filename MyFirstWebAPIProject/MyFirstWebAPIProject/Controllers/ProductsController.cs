@@ -23,7 +23,7 @@ namespace MyFirstWebAPIProject.Controllers
         }
 
         // GET: api/products/2
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}", Name = "get_product_with_id")]
         public ActionResult<Product> GetProduct(int id)
         {
             var product = _products.FirstOrDefault(p => p.Id == id);
@@ -31,14 +31,16 @@ namespace MyFirstWebAPIProject.Controllers
             {
                 return NotFound();
             }
-            return product;
+            return Ok(product);
         }
 
         // POST: api/products
         [HttpPost]
         public ActionResult<Product> PostProduct(Product product)
         {
+            product.Id = _products.Count() + 1;
             _products.Add(product);
+
             return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
         }
 

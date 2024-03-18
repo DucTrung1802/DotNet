@@ -1,4 +1,5 @@
-﻿using CRUDinCoreMVC.Models;
+﻿using CRUDinCoreMVC.GenericRepository;
+using CRUDinCoreMVC.Models;
 using CRUDinCoreMVC.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,32 +12,22 @@ namespace CRUDinCoreMVC.Controllers
         // Other than Employee Entity
         private readonly EFCoreDbContext _context;
 
-        // For Employee Entity
+        //Generic Reposiory, specify the Generic type T as Employee
         private readonly IGenericRepository<Employee> _repository;
 
-        public EmployeesController(IGenericRepository<Employee> repository, EFCoreDbContext context)
+        private readonly IEmployeeRepository _employeeRepository;
+
+        public EmployeesController(IGenericRepository<Employee> repository, IEmployeeRepository employeeRepository, EFCoreDbContext context)
         {
             _repository = repository;
+            _employeeRepository = employeeRepository;
             _context = context;
         }
 
         // GET: Employees
         public async Task<IActionResult> Index()
         {
-            var employees = from emp in await _repository.GetAllAsync()
-                            join dept in _context.Departments.ToList()
-                            on emp.DepartmentId equals dept.DepartmentId
-                            into EmEmployeeDepartmentGroup
-                            from departments in EmEmployeeDepartmentGroup.DefaultIfEmpty()
-                            select new Employee
-                            {
-                                EmployeeId = emp.EmployeeId,
-                                DepartmentId = emp.DepartmentId,
-                                Name = emp.Name,
-                                Email = emp.Email,
-                                Position = emp.Position,
-                                Department = departments
-                            };
+            var employees = await _employeeRepository.GetAllEmployeesAsync();
             return View(employees);
         }
 
@@ -48,14 +39,12 @@ namespace CRUDinCoreMVC.Controllers
                 return NotFound();
             }
 
-            var employee = await _repository.GetByIdAsync(Convert.ToInt32(id));
+            var employee = await _employeeRepository.GetEmployeeByIdAsync(Convert.ToInt32(id));
 
             if (employee == null)
             {
                 return NotFound();
             }
-
-            employee.Department = await _context.Departments.FindAsync(employee.DepartmentId);
 
             return View(employee);
         }
@@ -146,13 +135,11 @@ namespace CRUDinCoreMVC.Controllers
                 return NotFound();
             }
 
-            var employee = await _repository.GetByIdAsync(Convert.ToInt32(id));
+            var employee = await _employeeRepository.GetEmployeeByIdAsync(Convert.ToInt32(id));
             if (employee == null)
             {
                 return NotFound();
             }
-
-            employee.Department = await _context.Departments.FindAsync(employee.DepartmentId);
 
             return View(employee);
         }

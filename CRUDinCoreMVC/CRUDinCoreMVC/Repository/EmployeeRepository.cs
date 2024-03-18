@@ -8,7 +8,7 @@ namespace CRUDinCoreMVC.Repository
     {
         public EmployeeRepository(EFCoreDbContext context) : base(context) { }
 
-        //Returns all employees from the database.
+        //Returns all employees from the database including the Department Data
         public async Task<IEnumerable<Employee>> GetAllEmployeesAsync()
         {
             return await _context.Employees.Include(e => e.Department).ToListAsync();

@@ -1,27 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using CRUDinCoreMVC.Models;
+using CRUDinCoreMVC.UOW;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using CRUDinCoreMVC.Models;
 
 namespace CRUDinCoreMVC.Controllers
 {
     public class DepartmentsController : Controller
     {
-        private readonly EFCoreDbContext _context;
+        //The following variable will hold the IUnitOfWork Instance
+        private readonly IUnitOfWork _unitOfWork;
 
-        public DepartmentsController(EFCoreDbContext context)
+        public DepartmentsController(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         // GET: Departments
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Departments.ToListAsync());
+            return View(await _unitOfWork.Departments.GetAllAsync());
         }
 
         // GET: Departments/Details/5
@@ -32,8 +29,8 @@ namespace CRUDinCoreMVC.Controllers
                 return NotFound();
             }
 
-            var department = await _context.Departments
-                .FirstOrDefaultAsync(m => m.DepartmentId == id);
+            var department = await _unitOfWork.Departments
+                .GetByIdAsync(id);
             if (department == null)
             {
                 return NotFound();
@@ -57,8 +54,17 @@ namespace CRUDinCoreMVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(department);
-                await _context.SaveChangesAsync();
+                //Begin The Tranaction
+                _unitOfWork.CreateTransaction();
+
+                //Use Generic Reposiory to Insert a new employee
+                await _unitOfWork.Departments.InsertAsync(department);
+
+                //Save Changes to database
+                await _unitOfWork.Save();
+
+                //Commit the Changes to database
+                _unitOfWork.Commit();
                 return RedirectToAction(nameof(Index));
             }
             return View(department);
@@ -72,7 +78,7 @@ namespace CRUDinCoreMVC.Controllers
                 return NotFound();
             }
 
-            var department = await _context.Departments.FindAsync(id);
+            var department = await _unitOfWork.Departments.GetByIdAsync(id);
             if (department == null)
             {
                 return NotFound();
@@ -96,21 +102,25 @@ namespace CRUDinCoreMVC.Controllers
             {
                 try
                 {
-                    _context.Update(department);
-                    await _context.SaveChangesAsync();
+                    //Begin The Tranaction
+                    _unitOfWork.CreateTransaction();
+
+                    //Use Generic Reposiory to Insert a new employee
+                    await _unitOfWork.Departments.UpdateAsync(department);
+
+                    //Save Changes to database
+                    await _unitOfWork.Save();
+
+                    //Commit the Changes to database
+                    _unitOfWork.Commit();
+
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DepartmentExists(department.DepartmentId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    //Rollback Transaction
+                    _unitOfWork.Rollback();
                 }
-                return RedirectToAction(nameof(Index));
             }
             return View(department);
         }
@@ -123,8 +133,8 @@ namespace CRUDinCoreMVC.Controllers
                 return NotFound();
             }
 
-            var department = await _context.Departments
-                .FirstOrDefaultAsync(m => m.DepartmentId == id);
+            var department = await _unitOfWork.Departments
+                .GetByIdAsync(id);
             if (department == null)
             {
                 return NotFound();
@@ -138,19 +148,30 @@ namespace CRUDinCoreMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var department = await _context.Departments.FindAsync(id);
+            //Begin The Tranaction
+            _unitOfWork.CreateTransaction();
+
+            var department = await _unitOfWork.Departments.GetByIdAsync(id);
             if (department != null)
             {
-                _context.Departments.Remove(department);
+                try
+                {
+                    await _unitOfWork.Departments.DeleteAsync(id);
+
+                    //Save Changes to database
+                    await _unitOfWork.Save();
+
+                    //Commit the Changes to database
+                    _unitOfWork.Commit();
+                }
+                catch (Exception)
+                {
+                    //Rollback Transaction
+                    _unitOfWork.Rollback();
+                }
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool DepartmentExists(int id)
-        {
-            return _context.Departments.Any(e => e.DepartmentId == id);
         }
     }
 }

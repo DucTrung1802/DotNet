@@ -1,6 +1,5 @@
-using CRUDinCoreMVC.GenericRepository;
 using CRUDinCoreMVC.Models;
-using CRUDinCoreMVC.Repository;
+using CRUDinCoreMVC.UOW;
 using Microsoft.EntityFrameworkCore;
 
 namespace CRUDinCoreMVC
@@ -20,11 +19,8 @@ namespace CRUDinCoreMVC
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
-            //Registering the Specific Repository
-            builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-
-            //Registering the GenericRepository
-            builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            //Registering the UnitOfWork
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             var app = builder.Build();
 

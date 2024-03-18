@@ -1,6 +1,5 @@
-﻿using CRUDinCoreMVC.GenericRepository;
-using CRUDinCoreMVC.Models;
-using CRUDinCoreMVC.Repository;
+﻿using CRUDinCoreMVC.Models;
+using CRUDinCoreMVC.UOW;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,25 +8,20 @@ namespace CRUDinCoreMVC.Controllers
 {
     public class EmployeesController : Controller
     {
-        // Other than Employee Entity
-        private readonly EFCoreDbContext _context;
+        //The following variable will hold the IUnitOfWork Instance
+        private readonly IUnitOfWork _unitOfWork;
 
-        //Generic Reposiory, specify the Generic type T as Employee
-        private readonly IGenericRepository<Employee> _repository;
-
-        private readonly IEmployeeRepository _employeeRepository;
-
-        public EmployeesController(IGenericRepository<Employee> repository, IEmployeeRepository employeeRepository, EFCoreDbContext context)
+        public EmployeesController(IUnitOfWork unitOfWork)
         {
-            _repository = repository;
-            _employeeRepository = employeeRepository;
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         // GET: Employees
         public async Task<IActionResult> Index()
         {
-            var employees = await _employeeRepository.GetAllEmployeesAsync();
+            //Use Employee Repository to Fetch all the employees along with the Department Data
+            var employees = await _unitOfWork.Employees.GetAllEmployeesAsync();
+
             return View(employees);
         }
 
@@ -39,8 +33,8 @@ namespace CRUDinCoreMVC.Controllers
                 return NotFound();
             }
 
-            var employee = await _employeeRepository.GetEmployeeByIdAsync(Convert.ToInt32(id));
-
+            //Use Employee Repository to Fetch Employees along with the Department Data by Employee Id
+            var employee = await _unitOfWork.Employees.GetEmployeeByIdAsync(Convert.ToInt32(id));
             if (employee == null)
             {
                 return NotFound();
@@ -50,9 +44,9 @@ namespace CRUDinCoreMVC.Controllers
         }
 
         // GET: Employees/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "DepartmentId", "Name");
+            ViewData["DepartmentId"] = new SelectList(await _unitOfWork.Departments.GetAllAsync(), "DepartmentId", "Name");
             return View();
         }
 
@@ -63,13 +57,33 @@ namespace CRUDinCoreMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("EmployeeId,Name,Email,Position,DepartmentId")] Employee employee)
         {
+
             if (ModelState.IsValid)
             {
-                await _repository.InsertAsync(employee);
-                await _repository.SaveAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    //Begin The Tranaction
+                    _unitOfWork.CreateTransaction();
+
+                    //Use Generic Reposiory to Insert a new employee
+                    await _unitOfWork.Employees.InsertAsync(employee);
+
+                    //Save Changes to database
+                    await _unitOfWork.Save();
+
+                    //Commit the Changes to database
+                    _unitOfWork.Commit();
+
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception)
+                {
+                    //Rollback Transaction
+                    _unitOfWork.Rollback();
+                    //Log The Exception
+                }
             }
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "DepartmentId", "Name", employee.DepartmentId);
+            ViewData["DepartmentId"] = new SelectList(await _unitOfWork.Departments.GetAllAsync(), "DepartmentId", "Name", employee.DepartmentId);
             return View(employee);
         }
 
@@ -81,12 +95,12 @@ namespace CRUDinCoreMVC.Controllers
                 return NotFound();
             }
 
-            var employee = await _repository.GetByIdAsync(Convert.ToInt32(id));
+            var employee = await _unitOfWork.Employees.GetByIdAsync(id);
             if (employee == null)
             {
                 return NotFound();
             }
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "DepartmentId", "Name", employee.DepartmentId);
+            ViewData["DepartmentId"] = new SelectList(await _unitOfWork.Departments.GetAllAsync(), "DepartmentId", "Name", employee.DepartmentId);
             return View(employee);
         }
 
@@ -106,24 +120,27 @@ namespace CRUDinCoreMVC.Controllers
             {
                 try
                 {
-                    await _repository.UpdateAsync(employee);
-                    await _repository.SaveAsync();
+                    //Begin The Tranaction
+                    _unitOfWork.CreateTransaction();
+
+                    //Use Generic Reposiory to Insert a new employee
+                    await _unitOfWork.Employees.UpdateAsync(employee);
+
+                    //Save Changes to database
+                    await _unitOfWork.Save();
+
+                    //Commit the Changes to database
+                    _unitOfWork.Commit();
+
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    var emp = await _repository.GetByIdAsync(employee.EmployeeId);
-                    if (emp == null)
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    //Rollback Transaction
+                    _unitOfWork.Rollback();
                 }
-                return RedirectToAction(nameof(Index));
             }
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "DepartmentId", "DepartmentId", employee.DepartmentId);
+            ViewData["DepartmentId"] = new SelectList(await _unitOfWork.Departments.GetAllAsync(), "DepartmentId", "Name", employee.DepartmentId);
             return View(employee);
         }
 
@@ -135,7 +152,9 @@ namespace CRUDinCoreMVC.Controllers
                 return NotFound();
             }
 
-            var employee = await _employeeRepository.GetEmployeeByIdAsync(Convert.ToInt32(id));
+            //Use Employee Repository to Fetch Employees along with the Department Data by Employee Id
+            var employee = await _unitOfWork.Employees.GetEmployeeByIdAsync(Convert.ToInt32(id));
+
             if (employee == null)
             {
                 return NotFound();
@@ -149,19 +168,30 @@ namespace CRUDinCoreMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var employee = await _repository.GetByIdAsync(Convert.ToInt32(id));
+            //Begin The Tranaction
+            _unitOfWork.CreateTransaction();
+
+            var employee = await _unitOfWork.Employees.GetByIdAsync(id);
             if (employee != null)
             {
-                await _repository.DeleteAsync(id);
-                await _repository.SaveAsync();
+                try
+                {
+                    await _unitOfWork.Employees.DeleteAsync(id);
+
+                    //Save Changes to database
+                    await _unitOfWork.Save();
+
+                    //Commit the Changes to database
+                    _unitOfWork.Commit();
+                }
+                catch (Exception)
+                {
+                    //Rollback Transaction
+                    _unitOfWork.Rollback();
+                }
             }
 
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool EmployeeExists(int id)
-        {
-            return _context.Employees.Any(e => e.EmployeeId == id);
         }
     }
 }

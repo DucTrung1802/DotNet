@@ -1,0 +1,6 @@
+@ModelBindingFromForm_HostAddress = http://localhost:5202
+
+GET {{ModelBindingFromForm_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,54 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\FPT\\GIT\\DotNet\\MagicVilla\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{D3BCD359-8BFD-4E11-9F7F-1FE3E2D991D6}|MagicVilla\\MagicVilla.csproj|d:\\fpt\\git\\dotnet\\magicvilla\\magicvilla\\controllers\\villaapicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D3BCD359-8BFD-4E11-9F7F-1FE3E2D991D6}|MagicVilla\\MagicVilla.csproj|solutionrelative:magicvilla\\controllers\\villaapicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D3BCD359-8BFD-4E11-9F7F-1FE3E2D991D6}|MagicVilla\\MagicVilla.csproj|d:\\fpt\\git\\dotnet\\magicvilla\\magicvilla\\models\\dto\\villastore.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D3BCD359-8BFD-4E11-9F7F-1FE3E2D991D6}|MagicVilla\\MagicVilla.csproj|solutionrelative:magicvilla\\models\\dto\\villastore.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "VillaAPIController.cs",
+              "DocumentMoniker": "D:\\FPT\\GIT\\DotNet\\MagicVilla\\MagicVilla\\Controllers\\VillaAPIController.cs",
+              "RelativeDocumentMoniker": "MagicVilla\\Controllers\\VillaAPIController.cs",
+              "ToolTip": "D:\\FPT\\GIT\\DotNet\\MagicVilla\\MagicVilla\\Controllers\\VillaAPIController.cs",
+              "RelativeToolTip": "MagicVilla\\Controllers\\VillaAPIController.cs",
+              "ViewState": "AQIAAA0AAAAAAAAAAAAQwCMAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-20T16:55:54.034Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "VillaStore.cs",
+              "DocumentMoniker": "D:\\FPT\\GIT\\DotNet\\MagicVilla\\MagicVilla\\Models\\DTO\\VillaStore.cs",
+              "RelativeDocumentMoniker": "MagicVilla\\Models\\DTO\\VillaStore.cs",
+              "ToolTip": "D:\\FPT\\GIT\\DotNet\\MagicVilla\\MagicVilla\\Models\\DTO\\VillaStore.cs",
+              "RelativeToolTip": "MagicVilla\\Models\\DTO\\VillaStore.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAQAAAAVAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-20T16:53:25.216Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

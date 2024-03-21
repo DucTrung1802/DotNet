@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MagicVilla.Models.DTO
 {
-    public class VillaDTO
+    public class VillaUpdateDTO
     {
         [Required]
         [Key]

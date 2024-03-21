@@ -1,4 +1,5 @@
 using MagicVilla.Loggings;
+using MagicVilla.Mappings;
 using MagicVilla.Models;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -18,6 +19,8 @@ namespace MagicVilla
             {
                 option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection"));
             });
+            builder.Services.AddAutoMapper(typeof(MappingConfig));
+
             builder.Host.UseSerilog();
 
             // Error 406

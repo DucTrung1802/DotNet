@@ -9,7 +9,10 @@ namespace MagicVilla
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            // Error 406
+            //builder.Services.AddControllers(option => { option.ReturnHttpNotAcceptable = true; }).AddNewtonsoftJson().AddXmlDataContractSerializerFormatters();
+
+            builder.Services.AddControllers().AddNewtonsoftJson().AddXmlDataContractSerializerFormatters(); ;
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

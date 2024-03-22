@@ -1,6 +1,7 @@
 using MagicVilla.Loggings;
 using MagicVilla.Mappings;
 using MagicVilla.Models;
+using MagicVilla.UOW;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 namespace MagicVilla
@@ -31,6 +32,9 @@ namespace MagicVilla
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddSingleton<ILogging, Logging>();
+
+            // Registering the UnitOfWork
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             var app = builder.Build();
 

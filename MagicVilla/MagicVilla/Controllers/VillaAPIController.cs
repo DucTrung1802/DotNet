@@ -5,6 +5,7 @@ using MagicVilla.Models.DTO;
 using MagicVilla.UOW;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace MagicVilla.Controllers
 {
@@ -12,31 +13,43 @@ namespace MagicVilla.Controllers
     [ApiController]
     public class VillaAPIController : ControllerBase
     {
-        private readonly ILogging _logger;
-        private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
+        private readonly ILogging _logger;
+        protected APIResponse _response;
 
         public VillaAPIController(IUnitOfWork unitOfWork, IMapper mapper, ILogging logger)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _logger = logger;
+            _response = new APIResponse();
         }
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<VillaCreateDTO>>> GetVillas()
+        public async Task<ActionResult<APIResponse>> GetVillas()
         {
             _logger.Log("Getting all Villas", "");
-            var villaList = await _unitOfWork.Villas.GetAllVillasAsync();
-            return Ok(_mapper.Map<List<VillaDTO>>(villaList));
+            try
+            {
+                var villaList = await _unitOfWork.Villas.GetAllVillasAsync();
+                _response.CompileResult(HttpStatusCode.OK, villaList);
+            }
+            catch (Exception ex)
+            {
+                _logger.Log("Getting all Villas Error", "error");
+                _response.CompileError(HttpStatusCode.InternalServerError, ex);
+            }
+
+            return _response;
         }
 
         [HttpGet("{id:int}", Name = "GetVillaById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<VillaCreateDTO>> GetVillaById(int id)
+        public async Task<ActionResult<APIResponse>> GetVillaById(int id)
         {
             if (id <= 0)
             {
@@ -45,34 +58,35 @@ namespace MagicVilla.Controllers
             }
 
             var villa = await _unitOfWork.Villas.GetVillaByIdAsync(id);
+
             if (villa == null)
             {
                 return NotFound();
             }
-            return Ok(_mapper.Map<VillaDTO>(villa));
+
+            _response.CompileResult(HttpStatusCode.OK, _mapper.Map<VillaDTO>(villa));
+            return _response;
         }
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<VillaUpdateDTO>> CreateVilla([FromBody] VillaCreateDTO villaCreateDTO)
+        public async Task<ActionResult<APIResponse>> CreateVilla([FromBody] VillaCreateDTO villaCreateDTO)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest("ModelState is not valid.");
             }
 
             if (villaCreateDTO == null)
             {
-                ModelState.AddModelError("BadRequest", "Villa data is null");
-                return BadRequest(villaCreateDTO);
+                return BadRequest("Villa data is null");
             }
 
             if (await _unitOfWork.Villas.GetVillaByNameAsync(villaCreateDTO.Name) != null)
             {
-                ModelState.AddModelError("CustomError", "Villa already exists!");
-                return BadRequest();
+                return BadRequest("Villa already exists!");
             }
 
             Villa model = _mapper.Map<Villa>(villaCreateDTO);
@@ -82,30 +96,29 @@ namespace MagicVilla.Controllers
             try
             {
                 _unitOfWork.CreateTransaction();
-
                 await _unitOfWork.Villas.InsertAsync(model);
-
                 await _unitOfWork.Save();
-
                 _unitOfWork.Commit();
 
                 var result = _mapper.Map<VillaUpdateDTO>(model);
 
-                return CreatedAtAction(nameof(GetVillaById), new { id = model.Id }, result);
+                _response.CompileResult(HttpStatusCode.Created, result);
             }
             catch (Exception ex)
             {
                 _unitOfWork.Rollback();
+
+                _response.CompileError(HttpStatusCode.InternalServerError, ex);
             }
 
-            return APIResponse;
+            return _response;
         }
 
         [HttpDelete("{id:int}", Name = "DeleteVillaById")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async IActionResult DeleteVillaById(int id)
+        public async Task<ActionResult<APIResponse>> DeleteVillaById(int id)
         {
             if (id <= 0)
             {
@@ -122,28 +135,26 @@ namespace MagicVilla.Controllers
             try
             {
                 await _unitOfWork.Villas.DeleteAsync(id);
-
-                //Save Changes to database
                 await _unitOfWork.Save();
-
-                //Commit the Changes to database
                 _unitOfWork.Commit();
 
-                return Ok();
+                _response.CompileResult(HttpStatusCode.OK, new { });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 //Rollback Transaction
                 _unitOfWork.Rollback();
 
-                return APISResponse
+                _response.CompileError(HttpStatusCode.InternalServerError, ex);
             }
+
+            return _response;
         }
 
         [HttpPut("{id:int}", Name = "UpdateVillaById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<VillaCreateDTO>> UpdateVillaById(int id, [FromBody] VillaUpdateDTO villaUpdateDTO)
+        public async Task<ActionResult<APIResponse>> UpdateVillaById(int id, [FromBody] VillaUpdateDTO villaUpdateDTO)
         {
             if (villaUpdateDTO == null)
             {
@@ -175,22 +186,24 @@ namespace MagicVilla.Controllers
                 //Commit the Changes to database
                 _unitOfWork.Commit();
 
-                return Ok(villaUpdateDTO);
+                _response.CompileResult(HttpStatusCode.OK, existingVilla);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 //Rollback Transaction
                 _unitOfWork.Rollback();
 
-                return APIResponse
+                _response.CompileError(HttpStatusCode.InternalServerError, ex);
             }
+
+            return _response;
         }
 
 
         [HttpPatch("{id:int}", Name = "UpdatePartialVillaById")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdatePartialVillaById(int id, JsonPatchDocument<VillaUpdateDTO> patchDTO)
+        public async Task<ActionResult<APIResponse>> UpdatePartialVillaById(int id, JsonPatchDocument<VillaUpdateDTO> patchDTO)
         {
             if (!ModelState.IsValid)
             {
@@ -215,8 +228,7 @@ namespace MagicVilla.Controllers
 
             villaUpdateDTO.Id = existingVilla.Id;
             _mapper.Map(villaUpdateDTO, existingVilla);
-            existingVilla.UpdatedDate = DateTime.UtcNow
-
+            existingVilla.UpdatedDate = DateTime.UtcNow;
             try
             {
                 await _unitOfWork.Villas.UpdateAsync(existingVilla);
@@ -227,15 +239,17 @@ namespace MagicVilla.Controllers
                 //Commit the Changes to database
                 _unitOfWork.Commit();
 
-                return Ok(villaUpdateDTO);
+                _response.CompileResult(HttpStatusCode.OK, existingVilla);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 //Rollback Transaction
                 _unitOfWork.Rollback();
 
-                return APIResponse
+                _response.CompileError(HttpStatusCode.InternalServerError, ex);
             }
+
+            return _response;
         }
     }
 }

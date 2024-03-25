@@ -3,8 +3,12 @@
   "WorkspaceRootPath": "D:\\FPT\\GIT\\DotNet\\MagicVilla\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{1AF78767-C5D6-41C1-813C-99F22130467F}|MagicVilla\\MagicVilla.csproj|d:\\fpt\\git\\dotnet\\magicvilla\\magicvilla\\controllers\\villaapicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1AF78767-C5D6-41C1-813C-99F22130467F}|MagicVilla\\MagicVilla.csproj|solutionrelative:magicvilla\\controllers\\villaapicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{1AF78767-C5D6-41C1-813C-99F22130467F}|MagicVilla\\MagicVilla.csproj|d:\\fpt\\git\\dotnet\\magicvilla\\magicvilla\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1AF78767-C5D6-41C1-813C-99F22130467F}|MagicVilla\\MagicVilla.csproj|solutionrelative:magicvilla\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1AF78767-C5D6-41C1-813C-99F22130467F}|MagicVilla\\MagicVilla.csproj|d:\\fpt\\git\\dotnet\\magicvilla\\magicvilla\\repositories\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1AF78767-C5D6-41C1-813C-99F22130467F}|MagicVilla\\MagicVilla.csproj|solutionrelative:magicvilla\\repositories\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -19,14 +23,27 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "VillaAPIController.cs",
-              "DocumentMoniker": "D:\\FPT\\GIT\\DotNet\\MagicVilla\\MagicVilla\\Controllers\\VillaAPIController.cs",
-              "RelativeDocumentMoniker": "MagicVilla\\Controllers\\VillaAPIController.cs",
-              "ToolTip": "D:\\FPT\\GIT\\DotNet\\MagicVilla\\MagicVilla\\Controllers\\VillaAPIController.cs",
-              "RelativeToolTip": "MagicVilla\\Controllers\\VillaAPIController.cs",
-              "ViewState": "AQIAAC8AAAAAAAAAAAAAwDAAAABuAAAA",
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\FPT\\GIT\\DotNet\\MagicVilla\\MagicVilla\\Program.cs",
+              "RelativeDocumentMoniker": "MagicVilla\\Program.cs",
+              "ToolTip": "D:\\FPT\\GIT\\DotNet\\MagicVilla\\MagicVilla\\Program.cs",
+              "RelativeToolTip": "MagicVilla\\Program.cs",
+              "ViewState": "AQIAABUAAAAAAAAAAAAswCIAAAAqAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-20T20:07:11.949Z",
+              "WhenOpened": "2024-03-25T05:52:25.961Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "UserRepository.cs",
+              "DocumentMoniker": "D:\\FPT\\GIT\\DotNet\\MagicVilla\\MagicVilla\\Repositories\\UserRepository.cs",
+              "RelativeDocumentMoniker": "MagicVilla\\Repositories\\UserRepository.cs",
+              "ToolTip": "D:\\FPT\\GIT\\DotNet\\MagicVilla\\MagicVilla\\Repositories\\UserRepository.cs",
+              "RelativeToolTip": "MagicVilla\\Repositories\\UserRepository.cs",
+              "ViewState": "AQIAAA4AAAAAAAAAAAA9wB4AAAAsAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-25T05:52:18.933Z",
               "EditorCaption": ""
             }
           ]

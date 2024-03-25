@@ -16,7 +16,6 @@ namespace MagicVilla.Repositories
         {
             _context = context;
             secretKey = configuration.GetValue<string>("ApiSettings:Secret");
-
         }
 
         public bool IsUniqueUser(string username)

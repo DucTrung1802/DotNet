@@ -1,6 +1,6 @@
 ﻿using MagicVilla.Models;
 using MagicVilla.Models.DTO;
-using MagicVilla.UOW;
+using MagicVilla.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -10,19 +10,19 @@ namespace MagicVilla.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUserRepository _userRepo;
         protected APIResponse _response;
 
-        public UserController(IUnitOfWork unitOfWork, APIResponse response)
+        public UserController(IUserRepository userRepo)
         {
-            _unitOfWork = unitOfWork;
+            _userRepo = userRepo;
             _response = new APIResponse();
         }
 
         [HttpPost("login")]
         public async Task<ActionResult<APIResponse>> Login([FromBody] LoginRequestDTO model)
         {
-            var loginResponse = await _unitOfWork.Users.Login(model);
+            var loginResponse = await _userRepo.Login(model);
 
             if (loginResponse.User == null || string.IsNullOrEmpty(loginResponse.Token))
             {
@@ -37,7 +37,7 @@ namespace MagicVilla.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<APIResponse>> Register([FromBody] RegistrationRequestDTO model)
         {
-            bool ifUserNameUnique = _unitOfWork.Users.IsUniqueUser(model.UserName);
+            bool ifUserNameUnique = _userRepo.IsUniqueUser(model.UserName);
 
             if (!ifUserNameUnique)
             {
@@ -45,7 +45,7 @@ namespace MagicVilla.Controllers
                 return _response;
             }
 
-            var user = await _unitOfWork.Users.Register(model);
+            var user = await _userRepo.Register(model);
 
             if (user == null)
             {

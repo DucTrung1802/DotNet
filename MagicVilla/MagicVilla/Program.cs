@@ -1,6 +1,7 @@
 using MagicVilla.Loggings;
 using MagicVilla.Mappings;
 using MagicVilla.Models;
+using MagicVilla.Repositories;
 using MagicVilla.UOW;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,13 @@ namespace MagicVilla
             {
                 option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection"));
             });
+
+            // Add Scopes
+            // Registering the UnitOfWork
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+
             builder.Services.AddAutoMapper(typeof(MappingConfig));
 
             builder.Host.UseSerilog();
@@ -59,7 +67,10 @@ namespace MagicVilla
                 {
                     Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n " +
                     "Enter 'Bearer' [space] and then your token in the text input below. \r\n\r\n" +
-                    "Example: \"Bearer  abcdef12345\"",
+                    "Example: \"Bearer abcdef12345\"",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Scheme = "Bearer"
 
                 });
 
@@ -82,9 +93,6 @@ namespace MagicVilla
                 });
             });
             builder.Services.AddSingleton<ILogging, Logging>();
-
-            // Registering the UnitOfWork
-            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             var app = builder.Build();
 

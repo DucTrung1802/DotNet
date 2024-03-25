@@ -14,7 +14,6 @@ namespace MagicVilla.UOW
         private IDbContextTransaction? _objTran = null;
 
         public VillaRepository Villas { get; private set; }
-        public UserRepository Users { get; private set; }
 
         public UnitOfWork(ApplicationDbContext? context)
         {

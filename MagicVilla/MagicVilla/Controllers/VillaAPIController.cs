@@ -3,6 +3,7 @@ using MagicVilla.Loggings;
 using MagicVilla.Models;
 using MagicVilla.Models.DTO;
 using MagicVilla.UOW;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -27,6 +28,7 @@ namespace MagicVilla.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<APIResponse>> GetVillas()
         {
@@ -46,6 +48,7 @@ namespace MagicVilla.Controllers
         }
 
         [HttpGet("{id:int}", Name = "GetVillaById")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -69,6 +72,7 @@ namespace MagicVilla.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -115,6 +119,7 @@ namespace MagicVilla.Controllers
         }
 
         [HttpDelete("{id:int}", Name = "DeleteVillaById")]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -152,6 +157,7 @@ namespace MagicVilla.Controllers
         }
 
         [HttpPut("{id:int}", Name = "UpdateVillaById")]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<APIResponse>> UpdateVillaById(int id, [FromBody] VillaUpdateDTO villaUpdateDTO)
@@ -201,6 +207,7 @@ namespace MagicVilla.Controllers
 
 
         [HttpPatch("{id:int}", Name = "UpdatePartialVillaById")]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<APIResponse>> UpdatePartialVillaById(int id, JsonPatchDocument<VillaUpdateDTO> patchDTO)

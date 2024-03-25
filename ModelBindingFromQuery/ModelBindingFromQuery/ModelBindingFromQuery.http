@@ -1,6 +1,0 @@
-@ModelBindingFromQuery_HostAddress = http://localhost:5167
-
-GET {{ModelBindingFromQuery_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FU_House_Finder")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3090799a2dbe1eea2ac461350d2ce38b3dc65076")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a8ec277a2a96db16ee03d9be49e86fb845267c18")]
 [assembly: System.Reflection.AssemblyProductAttribute("FU_House_Finder")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FU_House_Finder")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -2,29 +2,29 @@
 
 namespace FU_House_Finder.Models
 {
-    public class Commune
+    public class Village
     {
-        // Attributes for DTO 
+        // Attributes for DTO
         [Key]
         [Required]
-        public int CommuneID { get; set; }
+        public int VillageID { get; set; }
 
         [MaxLength(40)]
         [Required]
-        public string CommuneName { get; set; } = string.Empty;
+        public string VillageName { get; set; } = string.Empty;
         // =====================================================
+
 
         // Hidden Attributes
         [Required]
         public DateTime CreatedDate { get; set; }
         // =====================================================
 
+
         // Foreign Key Attributes
-        public District District { get; set; } = null!;
+        public Commune Commune { get; set; } = null!;
 
-        public int DistrictID { get; set; }
-
-        public ICollection<Village> Villages { get; set; } = new List<Village>();
+        public int CommuneID { get; set; }
         // =====================================================
     }
 }

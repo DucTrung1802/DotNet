@@ -22,9 +22,13 @@ namespace FU_House_Finder.Models
 
 
         // Foreign Key Attributes
-        public Commune Commune { get; set; } = null!;
 
+        // 02 | 1 Commune => 1 -> many Villages | FK: CommuneID
+        public Commune Commune { get; set; } = null!;
         public int CommuneID { get; set; }
+
+        // 03 | 1 Village => 0 -> many Houses | FK: VillageID
+        public ICollection<House>? Houses { get; set; }
         // =====================================================
     }
 }

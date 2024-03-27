@@ -27,7 +27,13 @@ namespace FU_House_Finder.Models
 
 
         // Foreign Key Attributes
-        // empty
+
+        // 05 | 1 Address => 1 - many Campuses | FK: AddressID
+        public ICollection<Campus> Campuses { get; set; } = new List<Campus>();
+
+        // 06 | 1 Adress => 1 House | FK: AddressID
+        public House House { get; set; } = null!;
+
         // =====================================================
     }
 }

@@ -36,6 +36,18 @@ namespace FU_House_Finder.Models
 
         // Foreign Key Attributes
 
+        // 03 | 1 Village => 0 -> many Houses | FK: VillageID
+        public Village Village { get; set; } = null!;
+        public int VillageID { get; set; }
+
+        // 04 | 1 Campus => 0 - many Houses | FK: CampusID
+        public Campus Campus { get; set; } = null!;
+        public int CampusID { get; set; }
+
+        // 06 | 1 Adress => 1 House | FK: AddressID, HouseID
+        public Address Address { get; set; } = null!;
+        public int AddressID { get; set; }
+
         // =====================================================
     }
 }

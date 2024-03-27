@@ -20,11 +20,14 @@ namespace FU_House_Finder.Models
         // =====================================================
 
         // Foreign Key Attributes
-        public District District { get; set; } = null!;
 
+        // 01 | 1 District => 1 -> many Communes | FK: DistrictID
+        public District District { get; set; } = null!;
         public int DistrictID { get; set; }
 
+        // 02 | 1 Commune => 1 -> many Villages | FK: CommuneID
         public ICollection<Village> Villages { get; set; } = new List<Village>();
+
         // =====================================================
     }
 }

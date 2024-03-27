@@ -19,7 +19,10 @@ namespace FU_House_Finder.Models
         // =====================================================
 
         // Foreign Key Attributes
+
+        // 01 | 1 District => 1 -> many Communes | FK: DistrictID
         public ICollection<Commune> Communes { get; set; } = new List<Commune>();
+
         // =====================================================
 
     }

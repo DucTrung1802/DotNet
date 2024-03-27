@@ -1,12 +1,105 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "D:\\FPT\\GIT\\DotNet\\FU_House_Finder\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{233F433C-6D5B-455D-BBDB-5E66FDA2EBDD}|FU_House_Finder\\FU_House_Finder.csproj|d:\\fpt\\git\\dotnet\\fu_house_finder\\fu_house_finder\\models\\village.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{233F433C-6D5B-455D-BBDB-5E66FDA2EBDD}|FU_House_Finder\\FU_House_Finder.csproj|solutionrelative:fu_house_finder\\models\\village.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{233F433C-6D5B-455D-BBDB-5E66FDA2EBDD}|FU_House_Finder\\FU_House_Finder.csproj|d:\\fpt\\git\\dotnet\\fu_house_finder\\fu_house_finder\\models\\userrole.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{233F433C-6D5B-455D-BBDB-5E66FDA2EBDD}|FU_House_Finder\\FU_House_Finder.csproj|solutionrelative:fu_house_finder\\models\\userrole.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{233F433C-6D5B-455D-BBDB-5E66FDA2EBDD}|FU_House_Finder\\FU_House_Finder.csproj|d:\\fpt\\git\\dotnet\\fu_house_finder\\fu_house_finder\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{233F433C-6D5B-455D-BBDB-5E66FDA2EBDD}|FU_House_Finder\\FU_House_Finder.csproj|solutionrelative:fu_house_finder\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{233F433C-6D5B-455D-BBDB-5E66FDA2EBDD}|FU_House_Finder\\FU_House_Finder.csproj|d:\\fpt\\git\\dotnet\\fu_house_finder\\fu_house_finder\\models\\status.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{233F433C-6D5B-455D-BBDB-5E66FDA2EBDD}|FU_House_Finder\\FU_House_Finder.csproj|solutionrelative:fu_house_finder\\models\\status.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{233F433C-6D5B-455D-BBDB-5E66FDA2EBDD}|FU_House_Finder\\FU_House_Finder.csproj|d:\\fpt\\git\\dotnet\\fu_house_finder\\fu_house_finder\\models\\roomtype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{233F433C-6D5B-455D-BBDB-5E66FDA2EBDD}|FU_House_Finder\\FU_House_Finder.csproj|solutionrelative:fu_house_finder\\models\\roomtype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Village.cs",
+              "DocumentMoniker": "D:\\FPT\\GIT\\DotNet\\FU_House_Finder\\FU_House_Finder\\Models\\Village.cs",
+              "RelativeDocumentMoniker": "FU_House_Finder\\Models\\Village.cs",
+              "ToolTip": "D:\\FPT\\GIT\\DotNet\\FU_House_Finder\\FU_House_Finder\\Models\\Village.cs",
+              "RelativeToolTip": "FU_House_Finder\\Models\\Village.cs",
+              "ViewState": "AQIAAAMAAAAAAAAAAAAAAA4AAAAfAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-27T10:12:32.821Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "UserRole.cs",
+              "DocumentMoniker": "D:\\FPT\\GIT\\DotNet\\FU_House_Finder\\FU_House_Finder\\Models\\UserRole.cs",
+              "RelativeDocumentMoniker": "FU_House_Finder\\Models\\UserRole.cs",
+              "ToolTip": "D:\\FPT\\GIT\\DotNet\\FU_House_Finder\\FU_House_Finder\\Models\\UserRole.cs",
+              "RelativeToolTip": "FU_House_Finder\\Models\\UserRole.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAACAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-27T10:12:25.505Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "User.cs",
+              "DocumentMoniker": "D:\\FPT\\GIT\\DotNet\\FU_House_Finder\\FU_House_Finder\\Models\\User.cs",
+              "RelativeDocumentMoniker": "FU_House_Finder\\Models\\User.cs",
+              "ToolTip": "D:\\FPT\\GIT\\DotNet\\FU_House_Finder\\FU_House_Finder\\Models\\User.cs",
+              "RelativeToolTip": "FU_House_Finder\\Models\\User.cs",
+              "ViewState": "AQIAABwAAAAAAAAAAAAwwAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-27T10:12:03.206Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Status.cs",
+              "DocumentMoniker": "D:\\FPT\\GIT\\DotNet\\FU_House_Finder\\FU_House_Finder\\Models\\Status.cs",
+              "RelativeDocumentMoniker": "FU_House_Finder\\Models\\Status.cs",
+              "ToolTip": "D:\\FPT\\GIT\\DotNet\\FU_House_Finder\\FU_House_Finder\\Models\\Status.cs",
+              "RelativeToolTip": "FU_House_Finder\\Models\\Status.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-27T10:11:45.438Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "RoomType.cs",
+              "DocumentMoniker": "D:\\FPT\\GIT\\DotNet\\FU_House_Finder\\FU_House_Finder\\Models\\RoomType.cs",
+              "RelativeDocumentMoniker": "FU_House_Finder\\Models\\RoomType.cs",
+              "ToolTip": "D:\\FPT\\GIT\\DotNet\\FU_House_Finder\\FU_House_Finder\\Models\\RoomType.cs",
+              "RelativeToolTip": "FU_House_Finder\\Models\\RoomType.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAASAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-27T10:11:20.441Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
     }
   ]
 }
